@@ -1,0 +1,2967 @@
+outputs: {
+   Output: {
+      SelectEvents: [
+         "TriggerPath"
+      ]
+      fileName: "dig.owner.CeEndpoint.version.sequencer.art"
+      module_label: "Output"
+      module_type: "RootOutput"
+      outputCommands: [
+         "drop *_*_*_*",
+         "keep *_compressDigiMCs_*_*",
+         "keep mu2e::StrawDigis_*_*_*",
+         "keep mu2e::CaloDigis_*_*_*",
+         "keep mu2e::CrvDigis_*_*_*",
+         "keep mu2e::StatusG4_*_*_*",
+         "keep art::TriggerResults_*_*_*",
+         "keep mu2e::EventWindowMarker_*_*_*",
+         "keep *_genCounter_*_*",
+         "keep mu2e::EventWeight_*_*_*",
+         "keep mu2e::ProtonBunchIntensity_*_*_*"
+      ]
+   }
+}
+physics: {
+   EndPath: [
+      "genCountLogger",
+      "digiCompressionCheck",
+      "Output"
+   ]
+   TriggerPath: [
+      "generate",
+      "genCounter",
+      "g4run",
+      "g4status",
+      "protonTimeMap",
+      "muonTimeMap",
+      "cosmicTimeMap",
+      "EWMProducer",
+      "makeSD",
+      "DigiFilter",
+      "CaloShowerStepFromStepPt",
+      "CaloShowerStepROFromShowerStep",
+      "CaloDigiFromShower",
+      "CrvPhotons",
+      "CrvSiPMCharges",
+      "CrvWaveforms",
+      "CrvDigi",
+      "compressDigiMCs"
+   ]
+   analyzers: {
+      digiCompressionCheck: {
+         NewTimeOffsets: {
+            inputs: [
+               "compressDigiMCs:protonTimeMap",
+               "compressDigiMCs:muonTimeMap",
+               "compressDigiMCs:cosmicTimeMap"
+            ]
+         }
+         OldTimeOffsets: {
+            inputs: [
+               "protonTimeMap",
+               "muonTimeMap",
+               "cosmicTimeMap"
+            ]
+         }
+         module_label: "digiCompressionCheck"
+         module_type: "CompressDigiMCsCheck"
+         newCaloShowerSimTag: "compressDigiMCs"
+         newCrvDigiMCTag: "compressDigiMCs"
+         newStrawDigiMCTag: "compressDigiMCs"
+         oldCaloShowerSimTag: "CaloShowerStepROFromShowerStep"
+         oldCrvDigiMCTag: "CrvWaveforms"
+         oldStrawDigiMCTag: "makeSD"
+      }
+      genCountLogger: {
+         makeHistograms: false
+         module_label: "genCountLogger"
+         module_type: "GenEventCountReader"
+      }
+   }
+   end_paths: [
+      "EndPath"
+   ]
+   filters: {
+      CaloFilter: {
+         module_label: "CaloFilter"
+         module_type: "CaloShowerSimFilter"
+      }
+      DigiFilter: {
+         MaxParticleMom: 1e8
+         MinNDigis: 10
+         MinParticleMom: 70
+         StrawDigiMCCollection: "makeSD"
+         module_label: "DigiFilter"
+         module_type: "StrawDigiMCFilter"
+         particleTypes: [
+            11,
+            -11,
+            13,
+            -13
+         ]
+      }
+      g4status: {
+         input: "g4run"
+         module_label: "g4status"
+         module_type: "FilterStatusG4"
+      }
+   }
+   producers: {
+      CaloDigiFromShower: {
+         addNoise: true
+         blindTime: 500
+         bufferDigi: 5
+         caloShowerModuleLabel: "CaloShowerStepROFromShowerStep"
+         diagLevel: 0
+         digiSampling: 5
+         dynamicRange: 2000
+         endTimeBuffer: 80
+         energyScale: 60
+         module_label: "CaloDigiFromShower"
+         module_type: "CaloDigiFromShower"
+         nBits: 12
+         noise: 2
+         pulseIntegralSteps: 50
+         thresholdAmplitude: 10
+         thresholdVoltage: 5
+      }
+      CaloShowerStepFromStepPt: {
+         caloMaterial: [
+            "G4_CESIUM_IODIDE",
+            "Polyethylene092"
+         ]
+         calorimeterROStepPoints: "calorimeterRO"
+         calorimeterStepPoints: "calorimeter"
+         compressMuons: false
+         deltaTime: 2e-1
+         diagLevel: 0
+         module_label: "CaloShowerStepFromStepPt"
+         module_type: "CaloShowerStepFromStepPt"
+         numZSlices: 20
+         physVolInfoInput: "compressPVDetector"
+         usePhysVolInfo: false
+      }
+      CaloShowerStepROFromShowerStep: {
+         TimeOffsets: {
+            inputs: [
+               "protonTimeMap",
+               "muonTimeMap",
+               "cosmicTimeMap"
+            ]
+         }
+         addTravelTime: true
+         blindTime: 500
+         caloBirksCorrection: true
+         caloCrystalShowerInputs: [
+            "CaloShowerStepFromStepPt:calorimeter"
+         ]
+         caloLRUCorrection: true
+         caloPEStatCorrection: true
+         diagLevel: 0
+         module_label: "CaloShowerStepROFromShowerStep"
+         module_type: "CaloShowerStepROFromShowerStep"
+      }
+      CeEndpointGun: {
+         module_label: "CeEndpointGun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            genId: "CeEndpoint"
+            pdgId: 11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      CeMEndpoint: {
+         doHistograms: true
+         module_label: "CeMEndpoint"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.0497e2
+            genId: "CeEndpoint"
+            pdgId: 11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      CeMLeadingLog: {
+         doHistograms: true
+         module_label: "CeMLeadingLog"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.0497e2
+            elow: 0
+            genId: "CeLeadingLog"
+            pdgId: 11
+            spectrumResolution: 1e-1
+            spectrumShape: "ceLeadingLog"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      CePEndpoint: {
+         doHistograms: true
+         module_label: "CePEndpoint"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 9.232e1
+            genId: "CeEndpoint"
+            pdgId: -11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      CePLeadingLog: {
+         doHistograms: true
+         module_label: "CePLeadingLog"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 9.232e1
+            elow: 0
+            genId: "CeLeadingLog"
+            pdgId: -11
+            spectrumResolution: 1e-1
+            spectrumShape: "ceLeadingLog"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      CrvDigi: {
+         ADCconversionFactor: 2300
+         crvWaveformsModuleLabel: "CrvWaveforms"
+         module_label: "CrvDigi"
+         module_type: "CrvDigitizer"
+         pedestal: 100
+      }
+      CrvPhotons: {
+         CRVSectors: [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "L1",
+            "L2",
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "E1",
+            "E2",
+            "U",
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+         ]
+         g4ModuleLabels: [
+            "*"
+         ]
+         lookupTableFileNames: [
+            "CRVConditions/v6_0/LookupTable_4550_0",
+            "CRVConditions/v6_0/LookupTable_1045_1",
+            "CRVConditions/v6_0/LookupTable_3040_0",
+            "CRVConditions/v6_0/LookupTable_4550_0",
+            "CRVConditions/v6_0/LookupTable_3200_0",
+            "CRVConditions/v6_0/LookupTable_4550_0",
+            "CRVConditions/v6_0/LookupTable_3200_0",
+            "CRVConditions/v6_0/LookupTable_6000_1",
+            "CRVConditions/v6_0/LookupTable_6000_1",
+            "CRVConditions/v6_0/LookupTable_6000_0",
+            "CRVConditions/v6_0/LookupTable_6000_0",
+            "CRVConditions/v6_0/LookupTable_5000_1",
+            "CRVConditions/v6_0/LookupTable_5000_1",
+            "CRVConditions/v6_0/LookupTable_6900_1",
+            "CRVConditions/v6_0/LookupTable_5700_0",
+            "CRVConditions/v6_0/LookupTable_2370_1",
+            "CRVConditions/v6_0/LookupTable_2370_1",
+            "CRVConditions/v6_0/LookupTable_5700_0",
+            "CRVConditions/v6_0/LookupTable_900_1",
+            "CRVConditions/v6_0/LookupTable_900_1",
+            "CRVConditions/v6_0/LookupTable_2100_1",
+            "CRVConditions/v6_0/LookupTable_1550_1"
+         ]
+         module_label: "CrvPhotons"
+         module_type: "CrvPhotonGenerator"
+         processNames: [
+            "*"
+         ]
+         reflectors: [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            -1,
+            -1,
+            1,
+            0,
+            1,
+            -1,
+            0,
+            1,
+            -1,
+            -1,
+            -1
+         ]
+         scintillationYield: 39400
+         scintillationYieldVariation: 2e-1
+         scintillationYieldVariationCutoff: 4e-1
+         startTime: 400
+         timeOffsets: {
+            inputs: [
+               "protonTimeMap",
+               "muonTimeMap",
+               "cosmicTimeMap"
+            ]
+         }
+         visibleEnergyAdjustmentFileName: "CRVResponse/fcl/visibleEnergyAdjustment.txt"
+      }
+      CrvSiPMCharges: {
+         AvalancheProbParam1: 6.07e-1
+         AvalancheProbParam2: 2.7
+         CrossTalkProb: 5e-2
+         ThermalRate: 3e-4
+         TrapType0Lifetime: 5
+         TrapType0Prob: 0
+         TrapType1Lifetime: 50
+         TrapType1Prob: 0
+         blindTime: 400
+         capacitance: 8.84e-14
+         crvPhotonsModuleLabel: "CrvPhotons"
+         deadSiPMProbability: 1e-2
+         inactivePixels: [
+            [
+               18,
+               18
+            ],
+            [
+               18,
+               19
+            ],
+            [
+               18,
+               20
+            ],
+            [
+               18,
+               21
+            ],
+            [
+               19,
+               18
+            ],
+            [
+               19,
+               19
+            ],
+            [
+               19,
+               20
+            ],
+            [
+               19,
+               21
+            ],
+            [
+               20,
+               18
+            ],
+            [
+               20,
+               19
+            ],
+            [
+               20,
+               20
+            ],
+            [
+               20,
+               21
+            ],
+            [
+               21,
+               18
+            ],
+            [
+               21,
+               19
+            ],
+            [
+               21,
+               20
+            ],
+            [
+               21,
+               21
+            ]
+         ]
+         module_label: "CrvSiPMCharges"
+         module_type: "CrvSiPMChargeGenerator"
+         nPixelsX: 40
+         nPixelsY: 40
+         overvoltage: 3
+         photonMapFileName: "CRVConditions/v6_0/photonMap.root"
+         timeConstant: 1.33e1
+      }
+      CrvWaveforms: {
+         FEBtimeSpread: 2
+         crvSiPMChargesModuleLabel: "CrvSiPMCharges"
+         minVoltage: 2.75e-2
+         module_label: "CrvWaveforms"
+         module_type: "CrvWaveformsGenerator"
+         noise: 4e-4
+         singlePEReferenceCharge: 2.652e-13
+         singlePEWaveformFileName: "CRVResponse/fcl/singlePEWaveform_v3.txt"
+         singlePEWaveformMaxTime: 100
+         singlePEWaveformPrecision: 5e-1
+         singlePEWaveformStretchFactor: 1.047
+      }
+      EWMProducer: {
+         module_label: "EWMProducer"
+         module_type: "EventWindowMarkerProducer"
+      }
+      PrimaryProtonGunN: {
+         inputfile: "Mu2eG4/test/genconfig_PrimaryProtonsN.txt"
+         module_label: "PrimaryProtonGunN"
+         module_type: "PrimaryProtonGunN"
+         stashSize: @nil
+      }
+      RMCGun: {
+         doHistograms: false
+         module_label: "RMCGun"
+         module_type: "RMCGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 110
+            elow: 60
+            generateIntConversion: 0
+            spectrumResolution: 1e-1
+            spectrumShape: "flat"
+         }
+         verbosityLevel: 0
+      }
+      RPCGun: {
+         doHistograms: false
+         module_label: "RPCGun"
+         module_type: "RPCGun"
+         physics: {
+            ehi: 1.401e2
+            elow: 1.5
+            generateIntConversion: 0
+            spectrumResolution: 1e-1
+            spectrumShape: "Bistirlich"
+         }
+         pionStops: {
+            averageNumRecordsToUse: 0
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.pion-DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedPionDumper/stops"
+            verbosityLevel: 0
+         }
+         verbosityLevel: 0
+      }
+      StoppedParticleRMCGun: {
+         doHistograms: false
+         module_label: "StoppedParticleRMCGun"
+         module_type: "StoppedMuonRMCGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            treeName: "stoppedMuonDumper/stops"
+            verbosityLevel: 0
+         }
+         physics: {
+            ehi: 120
+            elow: 1.5
+            generateIntConversion: 0
+            physicsVerbosityLevel: 0
+            rhoInternal: 1
+            spectrumShape: "flat"
+         }
+         verbosityLevel: 0
+      }
+      StoppedParticleReactionGun: {
+         module_label: "StoppedParticleReactionGun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            genId: "CeEndpoint"
+            pdgId: 11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      StoppedParticleReactionGunN: {
+         module_label: "StoppedParticleReactionGunN"
+         module_type: "StoppedParticleReactionGunN"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            genId: "CeEndpoint"
+            pdgId: 11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+         stashSize: @nil
+      }
+      compressDigiMCs: {
+         caloShowerSimTag: "CaloShowerStepROFromShowerStep"
+         caloShowerStepROTag: "CaloShowerStepROFromShowerStep"
+         caloShowerStepTags: [
+            "CaloShowerStepFromStepPt:calorimeter",
+            "CaloShowerStepFromStepPt:calorimeterRO"
+         ]
+         crvDigiMCTag: "CrvWaveforms"
+         extraStepPointMCTags: [
+            "g4run:virtualdetector",
+            "g4run:protonabsorber"
+         ]
+         keptProducts: [
+            "keep *_compressDigiMCs_*_*"
+         ]
+         mcTrajectoryTag: "g4run"
+         module_label: "compressDigiMCs"
+         module_type: "CompressDigiMCs"
+         simParticleTags: [
+            "g4run"
+         ]
+         strawDigiMCTag: "makeSD"
+         timeMapTags: [
+            "protonTimeMap",
+            "muonTimeMap",
+            "cosmicTimeMap"
+         ]
+      }
+      cosmicTimeMap: {
+         hitsInputTag: "detectorFilter:tracker"
+         module_label: "cosmicTimeMap"
+         module_type: "GenerateCosmicTimes"
+         tmax: 1705
+         tmin: 400
+      }
+      cosmicTimeMapPrimary: {
+         hitsInputTag: "detectorFilter:tracker"
+         module_label: "cosmicTimeMapPrimary"
+         module_type: "GenerateCosmicTimes"
+         tmax: 1705
+         tmin: 450
+      }
+      dioalll: {
+         module_label: "dioalll"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            pdgId: 11
+            spectrumFileName: "ConditionsService/data/czarnecki_szafron_Al_2016.tbl"
+            spectrumShape: "tabulated"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      dioallo: {
+         module_label: "dioallo"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            pdgId: 11
+            spectrumFileName: "ConditionsService/data/czarnecki_Al.tbl"
+            spectrumShape: "tabulated"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      egun: {
+         module_label: "egun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.0497176e2
+            elow: 1.0497175e2
+            pdgId: 11
+            spectrumShape: "flat"
+            spectrumVariable: "momentum"
+         }
+      }
+      g4run: {
+         Mu2eG4CommonCut: {}
+         Mu2eG4StackingOnlyCut: {
+            pars: [
+               12,
+               -12,
+               14,
+               -14,
+               16,
+               -16
+            ]
+            type: "pdgId"
+         }
+         Mu2eG4SteppingOnlyCut: {}
+         MultiStageParameters: {}
+         ResourceLimits: {
+            maxSimParticleCollectionSize: 100000
+            maxStepPointCollectionSize: 100000
+            maxStepsPerTrack: 100000
+         }
+         SDConfig: {
+            TimeVD: {
+               times: []
+            }
+            enableSD: [
+               "tracker",
+               "calorimeter",
+               "calorimeterRO",
+               "CRV",
+               "virtualdetector",
+               "protonabsorber"
+            ]
+            preSimulatedHits: []
+         }
+         TrajectoryControl: {
+            defaultMinPointDistance: 500
+            mcTrajectoryMinSteps: 5
+            mcTrajectoryMomentumCut: 50
+            perVolumeMinDistance: {
+               CalorimeterMother: 15
+               DS1Vacuum: 15
+               DS2Vacuum: 15
+               DS3Vacuum: 15
+               PSVacuum: 15
+               StoppingTargetMother: 15
+               TS1Vacuum: 15
+               TS2Vacuum: 15
+               TS3Vacuum: 15
+               TS4Vacuum: 15
+               TS5Vacuum: 15
+               TrackerMother: 15
+            }
+            produce: true
+            saveTrajectoryMomentumCut: 50
+         }
+         debug: {
+            GDMLFileName: "mu2e.gdml"
+            PiENuPolicyVerbosity: 0
+            checkFieldMap: 0
+            diagLevel: 0
+            exportPDTEnd: false
+            exportPDTStart: false
+            fillDiagnosticHistograms: false
+            printElements: false
+            printMaterials: false
+            printPhysicsProcessSummary: false
+            printTrackTiming: false
+            stepLimitKillerVerbose: true
+            steppingVerbosityLevel: 0
+            storePhysicsTablesDir: ""
+            trackingVerbosityLevel: 0
+            warnEveryNewRun: false
+            worldVerbosityLevel: 0
+            writeGDML: false
+         }
+         generatorModuleLabel: "generate"
+         module_label: "g4run"
+         module_type: "Mu2eG4"
+         physics: {
+            BirksConsts: {}
+            PiENuPolicy: "PDG"
+            addProcesses: []
+            bfieldMaxStep: 20
+            captureDModel: ""
+            deltaChord: 5e-2
+            deltaIntersection: 5e-2
+            deltaOneStep: 5e-2
+            epsilonMax: 1e-3
+            epsilonMin: 5e-5
+            limitStepInAllVolumes: false
+            maxIntSteps: 1000
+            minRangeCut: 1e-2
+            modifyEMOption0: false
+            modifyEMOption4: false
+            noDecay: []
+            physicsListName: "ShieldingM"
+            protonProductionCut: 0
+            rangeToIgnore: 1e-5
+            setMuHadLateralDisplacement: true
+            stepMinimum: 1e-2
+            stepper: "G4ClassicalRK4"
+            turnOffRadioactiveDecay: false
+            turnOnRadioactiveDecay: false
+            useEmOption4InTracker: false
+            useNewMuMinusAtomicCapture: false
+}
+         visualization: {
+            GUIMacro: "Mu2eG4/test/visqtGUI.mac"
+            initMacro: ""
+         }
+      }
+      genCounter: {
+         module_label: "genCounter"
+         module_type: "GenEventCounter"
+      }
+      generate: {
+         module_label: "generate"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            genId: "CeEndpoint"
+            pdgId: 11
+            spectrumShape: "CeEndpoint"
+            spectrumVariable: "totalEnergy"
+         }
+      }
+      makeSD: {
+         AllHitsPlanes: [
+            34,
+            35
+         ]
+         TimeOffsets: {
+            inputs: [
+               "protonTimeMap",
+               "muonTimeMap",
+               "cosmicTimeMap"
+            ]
+         }
+         module_label: "makeSD"
+         module_type: "StrawDigisFromStepPointMCs"
+      }
+      mgun: {
+         module_label: "mgun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.0497176e2
+            elow: 1.0497175e2
+            pdgId: 13
+            spectrumShape: "flat"
+            spectrumVariable: "momentum"
+         }
+      }
+      muonTimeMap: {
+         module_label: "muonTimeMap"
+         module_type: "GenerateMuonLife"
+      }
+      muonTimeMapPrimary: {
+         module_label: "muonTimeMapPrimary"
+         module_type: "GenerateMuonLife"
+      }
+      pgun: {
+         module_label: "pgun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: @nil
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.0001e2
+            elow: 9.999e1
+            pdgId: 2212
+            spectrumShape: "flat"
+            spectrumVariable: "momentum"
+         }
+      }
+      photonGun: {
+         module_label: "photonGun"
+         module_type: "StoppedParticleReactionGun"
+         muonStops: {
+            averageNumRecordsToUse: 500000
+            branchName: "stops"
+            inputFiles: [
+               "mergedMuonStops/nts.mu2e.DS-TGTstops.MDC2018a.001002_00000000.root"
+            ]
+            treeName: "stoppedMuonDumper/stops"
+            verbositylevel: 0
+         }
+         physics: {
+            ehi: 1.00001e2
+            elow: 9.9999e1
+            pdgId: 22
+            spectrumShape: "flat"
+            spectrumVariable: "momentum"
+         }
+      }
+      protonTimeMap: {
+         module_label: "protonTimeMap"
+         module_type: "GenerateProtonTimes"
+      }
+      protonTimeMapPrimary: {
+         module_label: "protonTimeMapPrimary"
+         module_type: "GenerateProtonTimes"
+      }
+   }
+}
+process_name: "CeEndpoint"
+services: {
+   CatalogInterface: {
+      service_provider: "TrivialFileDelivery"
+      service_type: "CatalogInterface"
+   }
+   ConditionsService: {
+      StrawElectronics: {
+         DiscriminatorThreshold: [
+            1.22e1,
+            1.13e1,
+            1.26e1,
+            1.25e1,
+            1.27e1,
+            1.25e1,
+            1.23e1,
+            1.11e1,
+            1.13e1,
+            1.21e1,
+            1.16e1,
+            1.15e1,
+            13,
+            1.11e1,
+            1.05e1,
+            1.14e1,
+            11,
+            12,
+            1.28e1,
+            1.28e1,
+            1.21e1,
+            1.12e1,
+            1.16e1,
+            1.31e1,
+            1.23e1,
+            1.23e1,
+            1.22e1,
+            1.18e1,
+            1.35e1,
+            1.34e1,
+            1.07e1,
+            1.17e1,
+            1.36e1,
+            1.23e1,
+            9.9,
+            1.21e1,
+            1.04e1,
+            1.32e1,
+            1.19e1,
+            1.35e1,
+            1.25e1,
+            1.26e1,
+            1.21e1,
+            1.42e1,
+            1.33e1,
+            1.15e1,
+            1.15e1,
+            1.17e1,
+            1.16e1,
+            1.32e1,
+            1.49e1,
+            1.27e1,
+            1.27e1,
+            1.26e1,
+            1.14e1,
+            1.35e1,
+            1.22e1,
+            1.26e1,
+            1.19e1,
+            1.03e1,
+            1.24e1,
+            1.23e1,
+            1.11e1,
+            1.07e1,
+            12,
+            1.29e1,
+            1.34e1,
+            1.38e1,
+            1.11e1,
+            1.31e1,
+            1.32e1,
+            1.23e1,
+            1.33e1,
+            1.26e1,
+            1.16e1,
+            1.14e1,
+            1.16e1,
+            1.19e1,
+            1.09e1,
+            1.08e1,
+            1.15e1,
+            1.24e1,
+            1.15e1,
+            11,
+            1.23e1,
+            1.24e1,
+            1.22e1,
+            1.09e1,
+            1.17e1,
+            1.13e1,
+            1.28e1,
+            1.33e1,
+            1.14e1,
+            1.26e1,
+            1.07e1,
+            12,
+            1.43e1,
+            1.21e1,
+            1.24e1,
+            1.26e1,
+            1.15e1,
+            1.33e1,
+            1.18e1,
+            1.33e1,
+            1.14e1,
+            11,
+            1.18e1,
+            1.31e1,
+            1.26e1,
+            1.15e1,
+            1.05e1,
+            1.12e1,
+            1.25e1,
+            1.19e1,
+            1.14e1,
+            1.23e1,
+            1.17e1,
+            1.22e1,
+            1.34e1,
+            1.05e1,
+            1.26e1,
+            1.17e1,
+            1.23e1,
+            1.13e1,
+            12,
+            1.26e1,
+            1.25e1,
+            1.21e1,
+            1.12e1,
+            1.36e1,
+            1.19e1,
+            1.14e1,
+            1.26e1,
+            1.29e1,
+            1.14e1,
+            1.28e1,
+            1.14e1,
+            1.32e1,
+            13,
+            1.14e1,
+            1.32e1,
+            1.24e1,
+            1.31e1,
+            1.49e1,
+            1.24e1,
+            1.12e1,
+            1.06e1,
+            1.04e1,
+            1.13e1,
+            13,
+            1.08e1,
+            1.19e1,
+            1.16e1,
+            1.23e1,
+            1.14e1,
+            1.26e1,
+            1.23e1,
+            1.37e1,
+            1.27e1,
+            1.21e1,
+            1.23e1,
+            1.02e1,
+            9.9,
+            1.09e1,
+            1.16e1,
+            1.26e1,
+            1.27e1,
+            1.24e1,
+            1.09e1,
+            1.22e1,
+            1.32e1,
+            1.32e1,
+            1.13e1,
+            1.28e1,
+            1.17e1,
+            1.27e1,
+            1.33e1,
+            1.24e1,
+            12,
+            1.23e1,
+            12,
+            1.29e1,
+            1.19e1,
+            1.26e1,
+            1.16e1,
+            1.36e1,
+            1.28e1,
+            1.36e1,
+            1.33e1,
+            1.32e1,
+            1.24e1,
+            1.16e1
+         ]
+         FlashStart: 1705
+      }
+      conditionsfile: "Mu2eG4/test/conditions_01.txt"
+      service_type: "ConditionsService"
+   }
+   DbService: {
+      dbName: "mu2e_conditions_prd"
+      purpose: "TRK_TEST"
+      service_type: "DbService"
+      verbose: 0
+      version: "v2_0"
+   }
+   FileTransfer: {
+      service_provider: "TrivialFileTransfer"
+      service_type: "FileTransfer"
+   }
+   G4Helper: {
+      service_type: "G4Helper"
+   }
+   GeometryService: {
+      inputFile: "Mu2eG4/geom/geom_common.txt"
+      service_type: "GeometryService"
+      simulatedDetector: {
+         tool_type: "Mu2e"
+      }
+   }
+   GlobalConstantsService: {
+      inputFile: "Mu2eG4/test/globalConstants_01.txt"
+      service_type: "GlobalConstantsService"
+   }
+   ProditionsService: {
+      alignedTracker: {
+         useDb: false
+         verbose: 0
+      }
+      deadStraw: {
+         deadPanels: []
+         deadPlanes: []
+         deadStraws: []
+         partlyDeadStraws: []
+         useDb: false
+         verbose: 0
+      }
+      fullReadoutStraw: {
+         straws: []
+         useDb: false
+         verbose: 0
+      }
+      mu2eDetector: {
+         useDb: false
+         verbose: 0
+      }
+      mu2eMaterial: {
+         dahlLynchScatteringFraction: 9.95e-1
+         elements: "TrackerConditions/data/ElementsList.data"
+         intersectionTolerance: 1e-3
+         isotopes: "TrackerConditions/data/IsotopesList.data"
+         materials: "TrackerConditions/data/MaterialsList.data"
+         maximumIntersectionRadiusFraction: 9.6e-1
+         strawElementOffset: 2.5e-1
+         strawGasMaterialName: "straw-gas"
+         strawWallMaterialName: "straw-wall"
+         strawWireMaterialName: "straw-wire"
+         verbose: 0
+      }
+      service_type: "ProditionsService"
+      strawDrift: {
+         cmus: [
+            1.57,
+            1.9,
+            2.26,
+            2.65,
+            3.05,
+            3.47,
+            3.84,
+            4.25,
+            4.58,
+            4.91,
+            5.15,
+            5.36,
+            5.56,
+            5.68,
+            5.77,
+            5.92,
+            5.98,
+            6.02,
+            6.02,
+            6.09,
+            6.19,
+            6.35,
+            6.48,
+            6.64,
+            6.72,
+            6.83,
+            6.87,
+            6.89,
+            6.85,
+            6.85
+         ]
+         driftIntegrationBins: 50
+         kVcm: [
+            4.2e-1,
+            4.9e-1,
+            5.59e-1,
+            6.29e-1,
+            6.99e-1,
+            7.69e-1,
+            8.39e-1,
+            9.09e-1,
+            9.79e-1,
+            1.049,
+            1.119,
+            1.189,
+            1.259,
+            1.329,
+            1.399,
+            1.573,
+            1.748,
+            1.923,
+            2.098,
+            2.448,
+            2.797,
+            3.147,
+            3.497,
+            3.846,
+            4.196,
+            4.545,
+            4.895,
+            5.245,
+            5.735,
+            500
+         ]
+         phiBins: 20
+         useDb: false
+         verbose: 0
+         wireVoltage: 1400
+      }
+      strawElectronics: {
+         ADCLSB: 3.662e-1
+         ADCOffset: 2
+         ADCPeriod: 20
+         ADCPoles: [
+            6.24137023,
+            4.6,
+            30,
+            6.24
+         ]
+         ADCZeros: [
+            7.2343156e-1
+         ]
+         TDCLSB: 3.125e-2
+         TDCResolution: 1e-1
+         TOTLSB: 4
+         adcAnalogNoise: 3
+         adcdVdI: []
+         clusterLookbackTime: 5
+         currentMeans: [
+            0,
+            1.29
+         ]
+         currentNormalizations: [
+            1,
+            1
+         ]
+         currentSigmas: [
+            2.2,
+            3
+         ]
+         currentT0s: [
+            4.7,
+            8.2
+         ]
+         deadTimeAnalog: 100
+         deadTimeDigital: 100
+         defaultAdcdVdI: 21100
+         defaultDiscriminatorThreshold: 12
+         defaultThresholddVdI: 1.1e7
+         discriminatorThreshold: []
+         electronicsTimeDelay: 0
+         eventWindowMarkerROCJitter: 5e-1
+         flashClockSpeed: 0
+         flashEnd: 500
+         flashStart: 1695
+         maxADC: 4095
+         maxTDC: 65535
+         maxTOT: 15
+         maxThreshTimeSeparation: 2
+         nADCPresamples: 5
+         preampPoles: [
+            160,
+            7
+         ]
+         preampToAdc1Poles: [
+            6.24137032,
+            30
+         ]
+         preampToAdc1Zeros: [
+            7.2343156e-1
+         ]
+         preampToAdc2Poles: [
+            4.6,
+            6.24
+         ]
+         preampToAdc2Zeros: []
+         preampZeros: [
+            2e-1
+         ]
+         responseBins: 10000
+         sampleRate: 10
+         saturationSampleFactor: 50
+         saturationVoltage: 90
+         strawNoise: 2.8
+         tCoince: 0
+         thresholdAnalogNoise: 9.5e-1
+         thresholddVdI: []
+         timeOffsetPanel: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         timeOffsetStrawCal: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         timeOffsetStrawHV: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         useDb: false
+         verbose: 0
+         wireDistances: [
+            0,
+            1200
+         ]
+      }
+      strawPhysics: {
+         bFieldOverride: -1
+         clusterDriftPolynomial: [
+            0,
+            16
+         ]
+         driftTimeVariance: [
+            2e-1,
+            5e-1
+         ]
+         electronCharge: 1.6e-7
+         gainRMSSlope: 8.09e-1
+         gasGain: 70000
+         ionizationEnergyTable: [
+            1.575962e1,
+            2.762967e1,
+            4.074e1,
+            5.981e1,
+            7.502e1,
+            9.1009e1,
+            1.24323e2,
+            1.4346e2,
+            4.2245e2,
+            4.7869e2,
+            5.3896e2,
+            6.1826e2,
+            6.861e2,
+            7.5574e2,
+            8.5477e2,
+            9.1803e2,
+            4.1208857e3,
+            4.4262296e3
+         ]
+         ionizedElectronKE: 0
+         meanFreePath: 3.57e-1
+         nGainGauss: 30
+         polyaA: 1.25
+         probPerCharge: [
+            6.56e-1,
+            1.5e-1,
+            6.4e-2,
+            3.5e-2,
+            2.25e-2,
+            1.55e-2,
+            1.05e-2,
+            8.1e-3,
+            6.1e-3,
+            4.9e-3,
+            3.9e-3,
+            3e-3,
+            2.5e-3,
+            2e-3,
+            1.6e-3,
+            1.2e-3,
+            9.5e-4,
+            7.5e-4
+         ]
+         propagationVelocity: 299
+         useDb: false
+         useNonLinearDrift: true
+         verbose: 0
+      }
+      strawResponse: {
+         centralWirePos: 65
+         driftErrorParameters: [
+            3.63559e-1,
+            3.62685e-1,
+            3.59959e-1,
+            3.49385e-1,
+            3.36731e-1,
+            3.21784e-1,
+            3.02363e-1,
+            2.82691e-1,
+            2.68223e-1,
+            2.52673e-1,
+            2.38557e-1,
+            2.29172e-1,
+            2.224e-1,
+            2.19224e-1,
+            2.17334e-1,
+            2.12797e-1,
+            2.10303e-1,
+            2.09876e-1,
+            2.08739e-1,
+            2.07411e-1,
+            2.08738e-1,
+            2.09646e-1,
+            2.10073e-1,
+            2.07101e-1,
+            2.0431e-1,
+            2.03994e-1,
+            2.02931e-1,
+            1.9953e-1,
+            1.96999e-1,
+            1.94559e-1,
+            1.91766e-1,
+            1.87725e-1,
+            1.85959e-1,
+            1.81423e-1,
+            1.7848e-1,
+            1.71357e-1,
+            1.71519e-1,
+            1.68422e-1,
+            1.61338e-1,
+            1.56641e-1,
+            1.51196e-1,
+            1.46546e-1,
+            1.44069e-1,
+            1.39858e-1,
+            1.35838e-1,
+            1.3319e-1,
+            1.32159e-1,
+            1.30062e-1,
+            1.23545e-1,
+            1.20212e-1
+         ]
+         driftRadiusResolutionRadius: -1
+         eDep: [
+            2.14044e-1,
+            3.11385e-1,
+            4.05932e-1,
+            5.03041e-1,
+            6.01217e-1,
+            7.00171e-1,
+            7.99435e-1,
+            8.98859e-1,
+            9.98941e-1,
+            1.09876,
+            1.19853,
+            1.29892,
+            1.39884,
+            1.49879,
+            1.59901,
+            1.69917,
+            1.799,
+            1.8992,
+            1.99935,
+            2.09929,
+            2.19977,
+            2.29964,
+            2.39963,
+            2.49954,
+            2.59964,
+            2.70024,
+            2.79984,
+            2.89971,
+            3.00015,
+            3.10025,
+            3.20018,
+            3.3004,
+            3.40047,
+            3.50056,
+            3.60085,
+            3.70057,
+            3.80023,
+            3.89995,
+            3.99972,
+            4.1001,
+            4.19994,
+            4.29969,
+            4.39939,
+            4.49958,
+            4.59949,
+            4.70012,
+            4.79972,
+            4.89955,
+            5.00006,
+            5.09999,
+            5.19956,
+            5.29984,
+            5.39941,
+            5.49948,
+            5.59953,
+            5.69931,
+            5.79903,
+            5.89868,
+            5.9986,
+            6.09881,
+            6.19851,
+            6.29715,
+            6.39709,
+            6.49732,
+            6.5966,
+            6.69613,
+            6.79413,
+            7.11646
+         ]
+         errorFactor: 1
+         halfPropVelocity: [
+            7.82426e1,
+            7.7959e1,
+            7.96768e1,
+            8.19859e1,
+            8.40565e1,
+            8.57715e1,
+            8.74105e1,
+            8.89116e1,
+            9.03429e1,
+            9.16604e1,
+            9.2789e1,
+            9.38731e1,
+            9.49901e1,
+            9.58371e1,
+            9.67258e1,
+            9.77119e1,
+            9.84066e1,
+            9.91643e1,
+            1.00082e2,
+            1.00903e2,
+            1.01591e2,
+            1.02627e2,
+            1.0356e2,
+            1.04628e2,
+            1.05924e2,
+            1.06967e2,
+            1.08189e2,
+            1.08931e2,
+            1.09836e2,
+            1.10911e2,
+            1.12013e2,
+            1.13362e2,
+            1.14558e2,
+            1.16156e2,
+            1.17553e2,
+            1.19312e2,
+            1.20478e2,
+            1.21325e2,
+            1.22056e2,
+            1.22498e2,
+            1.22872e2,
+            1.23221e2,
+            1.23242e2,
+            1.23056e2,
+            1.22908e2,
+            1.22972e2,
+            1.22926e2,
+            1.23092e2,
+            1.2291e2,
+            1.23313e2,
+            1.23347e2,
+            1.23571e2,
+            1.23815e2,
+            1.2401e2,
+            1.242e2,
+            1.24678e2,
+            1.24802e2,
+            1.24926e2,
+            1.25056e2,
+            1.25349e2,
+            1.25687e2,
+            1.26092e2,
+            1.25699e2,
+            1.25636e2,
+            1.25562e2,
+            1.25487e2,
+            1.2353e2,
+            1.18477e2
+         ]
+         linearDriftVelocity: 6.25e-2
+         maxDriftRadiusResolution: 2e-1
+         minDriftRadiusResolution: 2e-1
+         minT0DOCA: -2e-1
+         peakMinusPedestalEnergyScale: [
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3,
+            4.2e-3
+         ]
+         strawLengthFactor: 9e-1
+         t0shift: 4
+         tdCentralRes: [
+            7.62103e1,
+            6.62778e1,
+            5.83431e1,
+            5.32878e1,
+            4.99309e1,
+            4.71836e1,
+            4.513e1,
+            4.29479e1,
+            4.1208e1,
+            3.96033e1,
+            3.81616e1,
+            3.71039e1,
+            3.59969e1,
+            3.50815e1,
+            3.40823e1,
+            3.34877e1,
+            3.29431e1,
+            3.23805e1,
+            3.2071e1,
+            3.14614e1,
+            3.12776e1,
+            3.0635e1,
+            3.01217e1,
+            2.97487e1,
+            2.91309e1,
+            2.84732e1,
+            2.81865e1,
+            2.76331e1,
+            2.75013e1,
+            2.70485e1,
+            2.64937e1,
+            2.59912e1,
+            2.55595e1,
+            2.50649e1,
+            2.40109e1,
+            2.31914e1,
+            2.22386e1,
+            2.17544e1,
+            2.13721e1,
+            2.10055e1,
+            2.05813e1,
+            2.01229e1,
+            2.02912e1,
+            2.0615e1,
+            2.04152e1,
+            2.06086e1,
+            2.06452e1,
+            2.06372e1,
+            2.06297e1,
+            2.04731e1,
+            2.0401e1,
+            2.0174e1,
+            2.02679e1,
+            2.03807e1,
+            2.01217e1,
+            1.97474e1,
+            1.98524e1,
+            1.98093e1,
+            1.98447e1,
+            1.98788e1,
+            1.95326e1,
+            1.91781e1,
+            1.97947e1,
+            1.93696e1,
+            1.86408e1,
+            1.80923e1,
+            1.81123e1,
+            2.1371e1
+         ]
+         tdResSlope: [
+            1.60651e-2,
+            2.3741e-2,
+            4.21304e-2,
+            5.37863e-2,
+            6.33849e-2,
+            6.97326e-2,
+            7.25653e-2,
+            7.36391e-2,
+            7.46531e-2,
+            7.45937e-2,
+            7.50631e-2,
+            7.38193e-2,
+            7.40473e-2,
+            7.61049e-2,
+            7.85487e-2,
+            7.83369e-2,
+            8.02156e-2,
+            8.1579e-2,
+            8.15734e-2,
+            8.30998e-2,
+            8.24664e-2,
+            8.47393e-2,
+            8.57842e-2,
+            8.46082e-2,
+            8.66494e-2,
+            8.79027e-2,
+            8.83831e-2,
+            9.17368e-2,
+            9.09706e-2,
+            8.99623e-2,
+            8.99677e-2,
+            8.90875e-2,
+            8.88003e-2,
+            8.65446e-2,
+            8.47627e-2,
+            7.94976e-2,
+            8.02735e-2,
+            7.97023e-2,
+            7.98181e-2,
+            7.50883e-2,
+            7.3853e-2,
+            7.51729e-2,
+            7.37468e-2,
+            7.1133e-2,
+            6.98957e-2,
+            6.61819e-2,
+            6.42328e-2,
+            6.35607e-2,
+            6.23173e-2,
+            6.06496e-2,
+            5.74217e-2,
+            5.62718e-2,
+            5.32419e-2,
+            5.10767e-2,
+            4.93828e-2,
+            4.72257e-2,
+            4.47443e-2,
+            4.25958e-2,
+            4.19509e-2,
+            3.91222e-2,
+            3.72135e-2,
+            3.99352e-2,
+            3.40117e-2,
+            3.75563e-2,
+            3.68355e-2,
+            5.2548e-2,
+            6.49657e-2,
+            1.68875e-1
+         ]
+         timeOffsetPanel: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         timeOffsetStrawCal: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         timeOffsetStrawHV: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+         ]
+         totDriftTime: [
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            25,
+            4.12e1,
+            3.34e1,
+            2.19e1,
+            1.74e1,
+            1.45e1,
+            1.31e1,
+            1.29e1,
+            1.12e1,
+            1.31e1,
+            1.29e1,
+            4.08e1,
+            3.72e1,
+            23,
+            1.58e1,
+            13,
+            1.07e1,
+            1.01e1,
+            1.21e1,
+            11,
+            1.67e1,
+            3.93e1,
+            3.67e1,
+            2.97e1,
+            1.75e1,
+            1.17e1,
+            9.6,
+            9.5,
+            8.6,
+            14,
+            1.04e1,
+            3.78e1,
+            3.41e1,
+            3.15e1,
+            2.77e1,
+            21,
+            1.31e1,
+            8.5,
+            7.5,
+            7.9,
+            8.4,
+            3.44e1,
+            2.99e1,
+            2.77e1,
+            2.72e1,
+            2.71e1,
+            2.71e1,
+            2.78e1,
+            2.65e1,
+            1.55e1,
+            7.2,
+            3.31e1,
+            2.47e1,
+            2.27e1,
+            2.21e1,
+            2.26e1,
+            2.38e1,
+            2.57e1,
+            2.73e1,
+            2.74e1,
+            2.59e1,
+            2.39e1,
+            2.02e1,
+            1.85e1,
+            1.77e1,
+            1.79e1,
+            1.85e1,
+            1.96e1,
+            2.11e1,
+            2.23e1,
+            2.25e1,
+            25,
+            1.52e1,
+            1.44e1,
+            1.43e1,
+            1.43e1,
+            1.42e1,
+            15,
+            1.58e1,
+            1.65e1,
+            1.76e1,
+            1.27e1,
+            1.23e1,
+            1.17e1,
+            1.14e1,
+            1.12e1,
+            1.11e1,
+            1.14e1,
+            1.17e1,
+            1.23e1,
+            1.29e1,
+            2.39e1,
+            9.6,
+            8.7,
+            8.7,
+            8.5,
+            8.6,
+            8.8,
+            8.4,
+            8.9,
+            9.6,
+            9.1,
+            9.1,
+            7,
+            5.9,
+            5.8,
+            6.5,
+            6.4,
+            6.2,
+            6.5,
+            6.9,
+            1.9,
+            1.9,
+            5,
+            4.2,
+            3.8,
+            5,
+            4.7,
+            4.3,
+            5.2,
+            5,
+            5.5,
+            5.5,
+            5.5,
+            6e-1,
+            1.2,
+            2.3,
+            4.8,
+            2.4,
+            5.5,
+            2.7,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12
+         ]
+         useDb: false
+         useDriftErrorCalibration: true
+         useNonLinearDrift: true
+         verbose: 0
+         wireLengthBuffer: 2
+      }
+      verbose: 0
+   }
+   RandomNumberGenerator: {
+      service_type: "RandomNumberGenerator"
+   }
+   SeedService: {
+      baseSeed: 0
+      maxUniqueEngines: 20
+      policy: "autoIncrement"
+      service_type: "SeedService"
+   }
+   TFileService: {
+      fileName: "nts.owner.CeEndpoint.version.sequencer.root"
+      service_type: "TFileService"
+   }
+   message: {
+      destinations: {
+         log: {
+            categories: {
+               ArtReport: {
+                  limit: 1
+                  reportEvery: 1
+                  timespan: 300
+               }
+               ArtSummary: {
+                  limit: -1
+               }
+               Configuration: {
+                  limit: 0
+               }
+               DeactivatedPath: {
+                  limit: 0
+               }
+               FastCloning: {
+                  limit: 0
+               }
+               GEOM_MINRANGECUT: {
+                  limit: 0
+               }
+               GEOM_PARTICLECUT: {
+                  limit: 0
+               }
+               MF_INIT_OK: {
+                  limit: 0
+               }
+               MTdiagnostics: {
+                  limit: 0
+               }
+               PathConfiguration: {
+                  limit: 0
+               }
+               RANDOM: {
+                  limit: 0
+               }
+               TransientBranch: {
+                  limit: 0
+               }
+               default: {
+                  limit: 100
+               }
+               fileAction: {
+                  limit: -1
+               }
+               path: {
+                  limit: 0
+               }
+            }
+            threshold: "INFO"
+            type: "cout"
+         }
+         statistics: {
+            stats: {
+               categories: {
+                  MTdiagnostics: {
+                     limit: 0
+                  }
+               }
+               type: "cout"
+            }
+         }
+      }
+   }
+   scheduler: {
+      debugConfig: {
+         fileName: "CeEndpoint-debug.fcl"
+         printMode: "raw"
+      }
+      errorOnFailureToPut: true
+      errorOnMissingConsumes: false
+      errorOnSIGINT: true
+      num_threads: 1
+   }
+}
+source: {
+   maxEvents: 3
+   module_label: "source"
+   module_type: "EmptyEvent"
+}

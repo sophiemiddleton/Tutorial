@@ -1,0 +1,41 @@
+# TrkAna Tutorial Exercise 2, Optional Exercise 3
+# A. Edmonds, May 2019
+
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardProducers.fcl"
+#include "fcl/standardServices.fcl"
+#include "TrkDiag/fcl/prolog.fcl"
+
+process_name : TrkAnaEx02Opt03
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+
+physics :
+{
+  producers : { @table::TrkAnaReco.producers 
+      dioLLWeight : { module_type : BinnedSpectrumWeight
+      		      physics : @local::EventGenerator.producers.dioalll.physics
+      		      genParticleTag : "compressRecoMCs"
+		      genParticlePdgId : 11
+		      genParticleGenId : dioTail
+		      BinCenter : false
+      }
+  }
+  analyzers : { 
+     genCountLogger : @local::TrkAnaReco.analyzers.genCountLogger
+     TrkAnaEx02 : { @table::TrackAnalysisReco }
+  }
+}
+
+physics.analyzers.TrkAnaEx02.candidate.input : "KFF"
+physics.analyzers.TrkAnaEx02.candidate.branch : "trk"
+physics.analyzers.TrkAnaEx02.candidate.suffix : "DeM"
+physics.analyzers.TrkAnaEx02.diagLevel : 0
+physics.analyzers.TrkAnaEx02.FillMCInfo : false
+
+physics.TrkAnaTrigPath : [ @sequence::TrkAnaReco.TrigSequence, dioLLWeight ]
+physics.TrkAnaEndPath : [ genCountLogger, TrkAnaEx02 ]
+
+services.TFileService.fileName: "trkana-ex02-opt03.root"

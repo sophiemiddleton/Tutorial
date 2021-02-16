@@ -1,0 +1,25 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardServices.fcl"
+
+process_name : ExploreStrawDigis
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+services.TFileService.fileName : "ExploreStrawDigis.root"
+
+physics :
+{
+  producers : {} 
+  analyzers : {
+    ESD : {
+      module_type : ExploreStrawDigis
+      StrawDigis : SelectRecoMC
+    }
+  }
+
+  MyTrigPath : []
+  MyEndPath : [ ESD ]
+}
+
+

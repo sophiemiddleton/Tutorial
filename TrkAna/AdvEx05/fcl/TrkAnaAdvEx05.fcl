@@ -1,0 +1,8 @@
+#include "TrkDiag/fcl/TrkAnaReco.fcl"
+
+physics.analyzers.TrkAnaCustom : @local::physics.analyzers.TrkAnaNeg
+physics.analyzers.TrkAnaCustom.module_type : TrackAnalysisRecoCustom
+
+physics.TrkAnaEndPath : [ @sequence::physics.TrkAnaEndPath, TrkAnaCustom ]
+
+services.TFileService.fileName : "trkana-adv-ex05.root"

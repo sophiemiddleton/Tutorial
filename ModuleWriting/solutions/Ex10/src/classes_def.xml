@@ -1,0 +1,9 @@
+<lcgdict>
+
+ <class name="mu2e::OurAssns"/>
+ <class name="art::Wrapper<mu2e::OurAssns>"/>
+ <class name="art::Assns<mu2e::TrackTime, mu2e::KalSeed, void>"/>
+ <class name="art::Assns<mu2e::KalSeed, mu2e::TrackTime, void>"/>
+ <class name="art::Wrapper<art::Assns<mu2e::TrackTime, mu2e::KalSeed, void> >"/>
+ <class name="art::Wrapper<art::Assns<mu2e::KalSeed, mu2e::TrackTime, void> >"/>
+</lcgdict>

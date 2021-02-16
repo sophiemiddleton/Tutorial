@@ -1,0 +1,11 @@
+# TrkAna Advanced Tutorial Exercise 1
+# A. Edmonds, June 2019
+
+#include "TrkDiag/fcl/TrkAnaReco.fcl"
+
+process_name : TrkAnaAdvEx01
+
+physics.analyzers.TrkAnaNeg.diagLevel : 2
+physics.analyzers.TrkAnaPos.diagLevel : 2
+
+services.TFileService.fileName: "trkana-adv-ex01.root"

@@ -1,0 +1,61 @@
+#
+#
+# $Id: hello.fcl,v 1.1 2011/05/18 21:08:02 kutschke Exp $
+# $Author: kutschke $
+# $Date: 2011/05/18 21:08:02 $
+
+#include "fcl/minimalMessageService.fcl"
+
+# Give this job a name.
+process : HelloTrackTimePtrCoolDataProductsWrite
+
+# Start form an empty source
+source : {
+  module_type : RootInput
+}
+
+services : {
+  message : @local::default_message
+}
+
+physics :{
+  producers: {
+    trackTime : {
+      module_type : HelloTrackTimeAssns
+      input : "KFFDeM"
+    }
+
+    cool: {
+      module_type : HelloCoolTrackTime
+      input : "trackTime"
+      cut : 900
+    }
+  }
+
+  filters : {
+    helloFilter : {
+      module_type : FilterTrackTime
+      input : "cool"
+    }
+  }
+
+  p1 : [trackTime, cool, helloFilter]
+  e1 : [MyOutput]
+
+  trigger_paths  : [p1]
+  end_paths      : [e1]
+
+}
+
+outputs : {
+  MyOutput : {
+    module_type: RootOutput
+    SelectEvents : [p1]
+    fileName : "my-art-file.art"
+    outputCommands : [ "drop *_*_*_*",
+    		       "keep mu2e::TrackTimes_*_*_*",
+		       "keep mu2e::KalSeeds_KFFDeM_*_*",
+		       "keep mu2e::KalSeedmu2e::TrackTimevoidart::Assns_*_*_*"
+		     ]
+  }
+}

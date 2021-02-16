@@ -1,0 +1,42 @@
+# TrkAna Tutorial Exercise 5 (solution)
+# A. Edmonds, May 2019
+
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardProducers.fcl"
+#include "fcl/standardServices.fcl"
+#include "TrkDiag/fcl/prolog.fcl"
+
+process_name : TrkAnaTutEx05
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+
+physics :
+{
+  producers : { @table::TrkAnaReco.producers }
+  analyzers : { 
+     genCountLogger : @local::TrkAnaReco.analyzers.genCountLogger
+     TrkAnaEx05 : { @table::TrackAnalysisReco }
+  }
+}
+
+DeM : { input : "KFF"
+      	branch : "de"
+	suffix : "DeM"
+	fillMC : true
+}
+DmuM : { input : "KFF"
+      	 branch : "dm"
+	 suffix : "DmuM"
+	 fillMC : true
+}
+physics.analyzers.TrkAnaEx05.candidate : @local::DeM
+physics.analyzers.TrkAnaEx05.supplements : [ @local::DmuM ]
+physics.analyzers.TrkAnaEx05.diagLevel : 0
+physics.analyzers.TrkAnaEx05.FillMCInfo : true
+
+physics.TrkAnaTrigPath : [ @sequence::TrkAnaReco.TrigSequence ]
+physics.TrkAnaEndPath : [ genCountLogger, TrkAnaEx05 ]
+
+services.TFileService.fileName: "trkana-ex05.root"

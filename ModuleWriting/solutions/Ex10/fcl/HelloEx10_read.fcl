@@ -1,0 +1,38 @@
+#
+#
+# $Id: hello.fcl,v 1.1 2011/05/18 21:08:02 kutschke Exp $
+# $Author: kutschke $
+# $Date: 2011/05/18 21:08:02 $
+
+#include "fcl/minimalMessageService.fcl"
+
+# Give this job a name.
+process : HelloTrackTimePtrHistogram
+
+# Start form an empty source
+source : {
+  module_type : RootInput
+}
+
+services : {
+  message : @local::default_message
+}
+
+physics :{
+  analyzers: {
+    hello: {
+      module_type : HistogramTrackTimeAssns
+      input : "trackTime"
+    }
+  }
+
+  p1 : [ ]
+  e1 : [hello]
+
+  trigger_paths  : [p1]
+  end_paths      : [e1]
+
+}
+
+
+services.TFileService.fileName : "out.root"

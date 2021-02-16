@@ -1,0 +1,48 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardProducers.fcl"
+#include "fcl/standardServices.fcl"
+#include "TrkDiag/fcl/prolog.fcl"
+
+process_name: CaloTutorial
+
+source: { 
+   module_type: RootInput
+   maxEvents : 500
+}
+
+services : @local::Services.Reco
+services.TFileService.fileName : "ExploreCaloDigis.root"
+
+
+physics :
+{
+    producers: 
+    {            
+	@table::CaloReco.producers
+	@table::CaloCluster.producers
+    }
+
+    analyzers: 
+    {
+       DumpCaloDigis: 
+       {
+            module_type    : ExploreCaloDigis
+            CaloDigis      : SelectRecoMC
+            CaloClusters   : CaloClusterMaker
+            runExercise    : false
+	}
+     }
+
+
+    prod1: [ @sequence::CaloReco.Reco,
+	     @sequence::CaloCluster.Reco
+           ]
+
+    end1: [DumpCaloDigis]
+    
+
+    trigger_paths: [prod1]
+    end_paths:     [end1]
+}
+
+

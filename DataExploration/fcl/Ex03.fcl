@@ -1,0 +1,46 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardServices.fcl"
+#include "TrkHitReco/fcl/prolog.fcl"
+#include "Filters/fcl/prolog.fcl"
+
+process_name : ExploreStrawDigis
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+services.TFileService.fileName : "ExploreComboHits.root"
+
+physics :
+{
+  producers : {
+     @table::TrkHitReco.producers
+  } 
+  analyzers : {
+    SHD : {
+	module_type : StrawHitDiag
+	StrawDigiMCCollection : "compressDigiMCs"
+	ComboHitFlag : false
+	StrawHitFlagCollection : "FlagBkgHits:StrawHits"
+	TimeOffsets : {
+	  inputs : [ @sequence::DigiCompression.NoCosmicTimeMaps ]
+	}
+    }
+
+    CHD : {
+      module_type : ComboHitDiag
+	StrawDigiMCCollection : "compressDigiMCs"
+#	ComboHitCollection : "makeSH"  # single straw ComboHits
+	ComboHitCollection : "makePH"   # Panel-based StrawHits
+	UseFlagCollection : true
+#	StrawHitFlagCollection : "FlagBkgHits:StrawHits"  # single straw flags
+	UseStrawHitFlagCollection : true
+	StrawHitFlagCollection : "FlagBkgHits:ComboHits"  # panel-based flags
+	TimeOffsets : {
+	  inputs : [ @sequence::DigiCompression.NoCosmicTimeMaps ]
+	}
+    }
+  }
+  MyTrigPath : [    @sequence::TrkHitReco.PrepareHits ]
+  MyEndPath : [ SHD, CHD ]
+}
+#physics.producers.makePH.TestFlag : false

@@ -1,0 +1,70 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardServices.fcl"
+#include "fcl/standardProducers.fcl"
+#include "TrkHitReco/fcl/prolog.fcl"
+#include "TrkReco/fcl/prolog.fcl"
+#include "TrkPatRec/fcl/prolog.fcl"
+#include "CaloCluster/fcl/prolog.fcl"
+#include "CaloReco/fcl/prolog.fcl"
+#include "Filters/fcl/prolog.fcl"
+
+process_name : ExploreStrawDigis
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+services.TFileService.fileName : "ExploreTrackReco.root"
+
+physics :
+{
+  producers : {
+     @table::TrkHitReco.producers
+     @table::CaloReco.producers
+     @table::CaloCluster.producers
+     @table::Tracking.producers
+    FindMCPrimary : {
+      @table::CommonMC.FindMCPrimary
+      TimeOffsets : [ @sequence::DigiCompression.NoCosmicTimeMaps ]
+    }
+  } 
+  analyzers : {
+  TCD : {
+	module_type : TimeClusterDiag
+	StrawDigiMCCollection : "compressDigiMCs"
+	ComboHitCollection : "makePH"
+        TimeClusterCollection : "TimeClusterFinderDe"
+        UseFlagCollection : true
+	StrawHitFlagCollection : "FlagBkgHits:ComboHits"
+	HitSelectionBits	    : ["EnergySelection","TimeSelection","RadiusSelection"]
+	HitBackgroundBits	    : ["Background"]
+	TimeOffsets         :  { inputs : [ @sequence::DigiCompression.NoCosmicTimeMaps ] }
+        ClusterMVA : { MVAWeights : "TrkPatRec/test/TimeCluster.weights.xml" }
+        ClusterCaloMVA : { MVAWeights : "TrkPatRec/test/TimeClusterCalo.weights.xml" }
+	PlotTimeSpectra : false
+	VDStepPointMCCollection : "compressDigiMCs:virtualdetector"
+        T0Calculator : { CaloT0Offset : @local::TrackCaloMatching.DtOffset }
+	PlotTimeSpectra : true
+    }
+
+  HD : {
+	module_type : HelixDiag
+	StrawDigiMCCollection : "compressDigiMCs"
+	VDStepPointMCCollection : "compressDigiMCs:virtualdetector"
+	HelixSeedCollection : "HelixFinderDe:Positive"
+	ComboHitCollection : "makePH"
+	UseFlagCollection : true
+	StrawHitFlagCollection : "FlagBkgHits:ComboHits"
+	PlotHelices : true
+	InclusivePlotFlagBits : ["HitsOK"]
+	TimeOffsets         :  { inputs : [ @sequence::DigiCompression.NoCosmicTimeMaps ] }
+    }
+  }
+  MyTrigPath : [    @sequence::TrkHitReco.PrepareHits,
+   @sequence::CaloReco.Reco,                       
+   @sequence::CaloCluster.Reco,
+   TimeClusterFinderDe, HelixFinderDe,
+   FindMCPrimary]
+  MyEndPath : [ TCD, HD ]
+}
+
+

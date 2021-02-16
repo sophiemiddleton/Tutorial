@@ -1,0 +1,8 @@
+#include "TrkDiag/fcl/TrkAnaReco.fcl"
+
+physics.producers.DoubleWeight : { module_type : DoubleWeight
+			       	   input : "compressRecoMCs"
+}
+
+physics.TrkAnaTrigPath : [ @sequence::physics.TrkAnaTrigPath, DoubleWeight ]
+services.TFileService.fileName : "trkana-adv-ex04.root"
