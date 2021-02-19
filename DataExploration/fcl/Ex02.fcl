@@ -27,7 +27,7 @@ physics :
        DumpCaloDigis: 
        {
             module_type    : ExploreCaloDigis
-            CaloDigis      : SelectRecoMC
+            CaloDigis      : CaloDigiMaker
             CaloClusters   : CaloClusterMaker
             runExercise    : false
 	}

@@ -13,7 +13,7 @@
 #include "CalorimeterGeom/inc/Calorimeter.hh"
 #include "CalorimeterGeom/inc/DiskCalorimeter.hh"
 
-#include "RecoDataProducts/inc/CaloHit.hh"
+#include "RecoDataProducts/inc/CaloDigi.hh"
 #include "RecoDataProducts/inc/CaloCluster.hh"
 
 #include "TNtuple.h"
@@ -57,7 +57,7 @@ namespace mu2e {
        Config conf_;
 
        TTree* Ntup_;
-       int    evt_,run_, nHits_,cryId_[16384],cryDiskId_[16384], nCluster_,_cluNumCrystals[16384], cluIsSplit_[16384];
+       int    evt_,run_, nDigis_,cryId_[16384],cryDiskId_[16384], nCluster_,_cluNumCrystals[16384], cluIsSplit_[16384];
        float  cryEtot_,cryTime_[16384],cryEnergyDep_[16384],cryPosX_[16384],cryPosY_[16384],cryPosZ_[16384];
        float  cluEnergy_[16384],cluTime_[16384],cluCogX_[16384],cluCogY_[16384],cluCogZ_[16384],cluE1_[16384],cluE9_[16384],cluE25_[16384],clu2ndMoment_[16384];
        std::vector<std::vector<int> > cluCrystalList_;
@@ -88,7 +88,7 @@ namespace mu2e {
 
        Ntup_->Branch("evt",            &evt_ ,           "evt/I");
        Ntup_->Branch("run",            &run_ ,           "run/I");
-       Ntup_->Branch("nCry",           &nHits_ ,         "nCry/I");
+       Ntup_->Branch("nCry",           &nDigis_ ,         "nCry/I");
        Ntup_->Branch("cryId",          &cryId_ ,         "cryId[nCry]/I");
        Ntup_->Branch("cryDiskId",      &cryDiskId_,      "cryDiskId[nCry]/I");
        Ntup_->Branch("cryPosX",        &cryPosX_ ,       "cryPosX[nCry]/F");
@@ -125,8 +125,8 @@ namespace mu2e {
       const Calorimeter& cal = *(GeomHandle<Calorimeter>());
 
       //Calorimeter crystal hits (average from readouts)
-      auto caloCrystalHandle = event.getValidHandle<CaloHitCollection>(conf_.caloCrystalTag());
-      const auto& caloCrystalHits = *caloCrystalHandle;
+      auto caloDigiHandle = event.getValidHandle<CaloDigiCollection>(conf_.caloCrystalTag());
+      const auto& caloDigis = *caloDigiHandle;
 
       //Calorimeter clusters
       auto caloClusterHandle = event.getValidHandle<CaloClusterCollection>(conf_.caloClusterTag());
@@ -137,22 +137,25 @@ namespace mu2e {
       run_ = event.run();
 
       //--------------------------  Do calorimeter hits --------------------------------
-      nHits_ = 0;
+      nDigis_ = 0;
 
-      for (const auto& hit : caloCrystalHits)
+      for (const auto& digi : caloDigis)
       {
-	  int diskId                    = cal.crystal(hit.crystalID()).diskID();
-          CLHEP::Hep3Vector crystalPos  = cal.geomUtil().mu2eToDiskFF(diskId,cal.crystal(hit.crystalID()).position());  //in disk FF frame
+	int crystalId                = cal.caloIDMapper().crystalIDFromSiPMID(digi.SiPMID());
+	int diskId                    = cal.crystal(crystalId).diskID();
+	CLHEP::Hep3Vector crystalPos  = cal.geomUtil().mu2eToDiskFF(diskId,cal.crystal(crystalId).position());  //in disk FF frame
 
-          cryTime_[nHits_]      = hit.time();
-          cryEnergyDep_[nHits_]      = hit.energyDep();
-          cryPosX_[nHits_]      = crystalPos.x();
-          cryPosY_[nHits_]      = crystalPos.y();
-          cryPosZ_[nHits_]      = crystalPos.z();
-          cryId_[nHits_]        = hit.crystalID();
-          cryDiskId_[nHits_] = diskId;
+          cryTime_[nDigis_]      = digi.t0();
+	  int et = 0;
+	  for(auto e: digi.waveform()) et += e;
+          cryEnergyDep_[nDigis_]      = et;
+          cryPosX_[nDigis_]      = crystalPos.x();
+          cryPosY_[nDigis_]      = crystalPos.y();
+          cryPosZ_[nDigis_]      = crystalPos.z();
+          cryId_[nDigis_]        = crystalId;
+          cryDiskId_[nDigis_] = diskId;
 
-          ++nHits_;
+          ++nDigis_;
       }
 
 
@@ -163,11 +166,11 @@ namespace mu2e {
       for (const auto& cluster : caloClusters)
       {
           std::vector<int> list_;
-          for (int i=0;i<cluster.size();++i)
-          {
-              int idx = int(cluster.caloHitsPtrVector().at(i).get()- &caloCrystalHits.at(0));
-              list_.push_back(idx);
-          }
+          //for (int i=0;i<cluster.size();++i)
+          //{
+          //    int idx = int(cluster.caloHitsPtrVector().at(i).get()- &caloCrystalHits.at(0));
+          //    list_.push_back(idx);
+          //}
 
           cluEnergy_[nCluster_] = cluster.energyDep();
           cluTime_[nCluster_]   = cluster.time();
@@ -190,10 +193,13 @@ namespace mu2e {
       {
            //------ Plot energy / time of each crystal hit ---------------
 
-           for (const auto& hit :  caloCrystalHits)
+           for (const auto& digi :  caloDigis)
            {
-               crystalEnergy_->Fill(hit.energyDep());
-               crystalTime_->Fill(hit.time());
+	     int et = 0;
+	     for(auto e: digi.waveform()) et += e;
+
+	     crystalEnergy_->Fill(et);
+	     crystalTime_->Fill(digi.t0());
            }
 
 
