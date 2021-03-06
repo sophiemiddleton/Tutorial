@@ -27,9 +27,9 @@ physics :
        DumpCaloDigis: 
        {
             module_type    : ExploreCaloDigis
-            CaloDigis      : CaloDigiMaker
+            CaloDigis      : SelectRecoMC 
             CaloClusters   : CaloClusterMaker
-            runExercise    : false
+            runExercise    : true
 	}
      }
 
@@ -45,4 +45,4 @@ physics :
     end_paths:     [end1]
 }
 
-
+physics.producers.CaloRecoDigiMaker.caloDigiModuleLabel : SelectRecoMC
