@@ -14,7 +14,7 @@ physics :
   analyzers : {
     ESD : {
       module_type : ExploreStrawDigis
-      StrawDigis : makeSD
+      StrawDigis : SelectRecoMC
     }
   }
 
