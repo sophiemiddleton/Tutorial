@@ -45,4 +45,4 @@ physics :
     end_paths:     [end1]
 }
 
-physics.producers.CaloRecoDigiMaker.caloDigiModuleLabel : SelectRecoMC
+physics.producers.CaloRecoDigiMaker.caloDigiCollection : SelectRecoMC
