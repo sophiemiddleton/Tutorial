@@ -1,12 +1,12 @@
-#include "fcl/minimalMessageService.fcl"
-#include "fcl/standardServices.fcl"
-#include "fcl/standardProducers.fcl"
-#include "TrkHitReco/fcl/prolog.fcl"
-#include "TrkReco/fcl/prolog.fcl"
-#include "TrkPatRec/fcl/prolog.fcl"
-#include "CaloCluster/fcl/prolog.fcl"
-#include "CaloReco/fcl/prolog.fcl"
-#include "Filters/fcl/prolog.fcl"
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/TrkHitReco/fcl/prolog.fcl"
+#include "Offline/TrkReco/fcl/prolog.fcl"
+#include "Offline/TrkPatRec/fcl/prolog.fcl"
+#include "Offline/CaloCluster/fcl/prolog.fcl"
+#include "Offline/CaloReco/fcl/prolog.fcl"
+#include "Offline/Filters/fcl/prolog.fcl"
 
 process_name : ExploreStrawDigis
 
@@ -38,8 +38,8 @@ physics :
 	HitSelectionBits	    : ["EnergySelection","TimeSelection","RadiusSelection"]
 	HitBackgroundBits	    : ["Background"]
 	TimeOffsets         :  { inputs : [ @sequence::DigiCompression.NoCosmicTimeMaps ] }
-        ClusterMVA : { MVAWeights : "TrkPatRec/test/TimeCluster.weights.xml" }
-        ClusterCaloMVA : { MVAWeights : "TrkPatRec/test/TimeClusterCalo.weights.xml" }
+        ClusterMVA : { MVAWeights : "Offline/TrkPatRec/test/TimeCluster.weights.xml" }
+        ClusterCaloMVA : { MVAWeights : "Offline/TrkPatRec/test/TimeClusterCalo.weights.xml" }
 	PlotTimeSpectra : false
 	VDStepPointMCCollection : "compressDigiMCs:virtualdetector"
         T0Calculator : { CaloT0Offset : @local::TrackCaloMatching.DtOffset }

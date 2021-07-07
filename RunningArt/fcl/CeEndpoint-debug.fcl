@@ -365,7 +365,7 @@ physics: {
                "cosmicTimeMap"
             ]
          }
-         visibleEnergyAdjustmentFileName: "CRVResponse/fcl/visibleEnergyAdjustment.txt"
+         visibleEnergyAdjustmentFileName: "Offline/CRVResponse/fcl/visibleEnergyAdjustment.txt"
       }
       CrvSiPMCharges: {
          AvalancheProbParam1: 6.07e-1
@@ -462,7 +462,7 @@ physics: {
          module_type: "CrvWaveformsGenerator"
          noise: 4e-4
          singlePEReferenceCharge: 2.652e-13
-         singlePEWaveformFileName: "CRVResponse/fcl/singlePEWaveform_v3.txt"
+         singlePEWaveformFileName: "Offline/CRVResponse/fcl/singlePEWaveform_v3.txt"
          singlePEWaveformMaxTime: 100
          singlePEWaveformPrecision: 5e-1
          singlePEWaveformStretchFactor: 1.047
@@ -472,7 +472,7 @@ physics: {
          module_type: "EventWindowMarkerProducer"
       }
       PrimaryProtonGunN: {
-         inputfile: "Mu2eG4/test/genconfig_PrimaryProtonsN.txt"
+         inputfile: "Offline/Mu2eG4/test/genconfig_PrimaryProtonsN.txt"
          module_label: "PrimaryProtonGunN"
          module_type: "PrimaryProtonGunN"
          stashSize: @nil
@@ -630,7 +630,7 @@ physics: {
          }
          physics: {
             pdgId: 11
-            spectrumFileName: "ConditionsService/data/czarnecki_szafron_Al_2016.tbl"
+            spectrumFileName: "Offline/ConditionsService/data/czarnecki_szafron_Al_2016.tbl"
             spectrumShape: "tabulated"
             spectrumVariable: "totalEnergy"
          }
@@ -647,7 +647,7 @@ physics: {
          }
          physics: {
             pdgId: 11
-            spectrumFileName: "ConditionsService/data/czarnecki_Al.tbl"
+            spectrumFileName: "Offline/ConditionsService/data/czarnecki_Al.tbl"
             spectrumShape: "tabulated"
             spectrumVariable: "totalEnergy"
          }
@@ -779,7 +779,7 @@ physics: {
             useNewMuMinusAtomicCapture: false
 }
          visualization: {
-            GUIMacro: "Mu2eG4/test/visqtGUI.mac"
+            GUIMacro: "Offline/Mu2eG4/test/visqtGUI.mac"
             initMacro: ""
          }
       }
@@ -1101,7 +1101,7 @@ services: {
          ]
          FlashStart: 1705
       }
-      conditionsfile: "Mu2eG4/test/conditions_01.txt"
+      conditionsfile: "Offline/Mu2eG4/test/conditions_01.txt"
       service_type: "ConditionsService"
    }
    DbService: {
@@ -1119,14 +1119,14 @@ services: {
       service_type: "G4Helper"
    }
    GeometryService: {
-      inputFile: "Mu2eG4/geom/geom_common.txt"
+      inputFile: "Offline/Mu2eG4/geom/geom_common.txt"
       service_type: "GeometryService"
       simulatedDetector: {
          tool_type: "Mu2e"
       }
    }
    GlobalConstantsService: {
-      inputFile: "Mu2eG4/test/globalConstants_01.txt"
+      inputFile: "Offline/Mu2eG4/test/globalConstants_01.txt"
       service_type: "GlobalConstantsService"
    }
    ProditionsService: {
@@ -1153,10 +1153,10 @@ services: {
       }
       mu2eMaterial: {
          dahlLynchScatteringFraction: 9.95e-1
-         elements: "TrackerConditions/data/ElementsList.data"
+         elements: "Offline/TrackerConditions/data/ElementsList.data"
          intersectionTolerance: 1e-3
-         isotopes: "TrackerConditions/data/IsotopesList.data"
-         materials: "TrackerConditions/data/MaterialsList.data"
+         isotopes: "Offline/TrackerConditions/data/IsotopesList.data"
+         materials: "Offline/TrackerConditions/data/MaterialsList.data"
          maximumIntersectionRadiusFraction: 9.6e-1
          strawElementOffset: 2.5e-1
          strawGasMaterialName: "straw-gas"

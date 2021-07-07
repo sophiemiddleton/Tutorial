@@ -12,7 +12,7 @@
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 #include "solutions/Ex08/inc/TrackTime.hh"
 #include "solutions/Ex10/inc/OurAssns.hh"
 

@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "TrkDiag/inc/TrkInfo.hh"
-#include "TrkDiag/inc/EventWeightInfo.hh"
+#include "Offline/TrkDiag/inc/TrkInfo.hh"
+#include "Offline/TrkDiag/inc/EventWeightInfo.hh"
 
 void TrkAnaAdvEx02(std::string filename, std::string treename) {
 

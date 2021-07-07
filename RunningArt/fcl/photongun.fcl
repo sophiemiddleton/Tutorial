@@ -3,7 +3,7 @@
 #
 # original author: Dave Brown, LBNL
 #
-#include "JobConfig/primary/prolog.fcl"
+#include "Production/JobConfig/primary/prolog.fcl"
 process_name: PhotonGun
 
 source: { module_type : EmptyEvent }
@@ -24,7 +24,7 @@ outputs : {
 #
 # final configuration
 #
-#include "JobConfig/primary/epilog.fcl"
+#include "Production/JobConfig/primary/epilog.fcl"
 # customize the output
 services.SeedService.maxUniqueEngines: 50
 services.SeedService.baseSeed: 3

@@ -1,4 +1,4 @@
-#include "TrkDiag/fcl/TrkAnaReco.fcl"
+#include "Offline/TrkDiag/fcl/TrkAnaReco.fcl"
 
 physics.producers.TrkQualNewDeM : @local::physics.producers.TrkQualDeM
 physics.producers.TrkQualNewDeM.TrkQualMVA.MVAWeights : "TrkQual/TrkQualWeights/TMVAClassification_MLP.weights.xml"

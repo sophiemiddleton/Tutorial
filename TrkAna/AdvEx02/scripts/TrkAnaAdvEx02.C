@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include "TrkDiag/inc/TrkInfo.hh"
+#include "Offline/TrkDiag/inc/TrkInfo.hh"
 
 void TrkAnaAdvEx02(std::string filename, std::string treename) {
 

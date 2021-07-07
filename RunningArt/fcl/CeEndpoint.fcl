@@ -3,7 +3,7 @@
 #
 # original author: Dave Brown, LBNL
 #
-#include "JobConfig/primary/prolog.fcl"
+#include "Production/JobConfig/primary/prolog.fcl"
 process_name: CeEndpoint
 
 source: { 
@@ -27,7 +27,7 @@ outputs : {
 #
 # final configuration
 #
-#include "JobConfig/primary/epilog.fcl"
+#include "Production/JobConfig/primary/epilog.fcl"
 # customize the output
 services.TFileService.fileName: "nts.owner.CeEndpoint.version.sequencer.root"
 outputs.Output.fileName: "dig.owner.CeEndpoint.version.sequencer.art"
