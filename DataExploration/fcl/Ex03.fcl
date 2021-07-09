@@ -1,7 +1,7 @@
-#include "fcl/minimalMessageService.fcl"
-#include "fcl/standardServices.fcl"
-#include "TrkHitReco/fcl/prolog.fcl"
-#include "Filters/fcl/prolog.fcl"
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/TrkHitReco/fcl/prolog.fcl"
+#include "Offline/Filters/fcl/prolog.fcl"
 
 process_name : ExploreStrawDigis
 

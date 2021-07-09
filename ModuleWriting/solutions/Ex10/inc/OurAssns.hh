@@ -3,7 +3,7 @@
 
 #include "canvas/Persistency/Common/Assns.h"
 
-#include "RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 #include "solutions/Ex08/inc/TrackTime.hh"
 
 namespace mu2e {

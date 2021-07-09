@@ -4,7 +4,7 @@
 //
 
 // Mu2e includes
-#include "GeneralUtilities/inc/ParameterSetHelpers.hh"
+#include "Offline/GeneralUtilities/inc/ParameterSetHelpers.hh"
 // Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Principal/Event.h"
@@ -26,15 +26,15 @@
 #include "BTrk/ProbTools/ChisqConsistency.hh"
 #include "BTrk/BbrGeom/BbrVectorErr.hh"
 #include "BTrk/TrkBase/TrkHelixUtils.hh"
-#include "Mu2eUtilities/inc/TriggerResultsNavigator.hh"
-#include "Mu2eUtilities/inc/SimParticleTimeOffset.hh"
+#include "Offline/Mu2eUtilities/inc/TriggerResultsNavigator.hh"
+#include "Offline/Mu2eUtilities/inc/SimParticleTimeOffset.hh"
 // mu2e tracking
-#include "RecoDataProducts/inc/TrkFitDirection.hh"
-#include "BTrkData/inc/TrkStrawHit.hh"
+#include "Offline/RecoDataProducts/inc/TrkFitDirection.hh"
+#include "Offline/BTrkData/inc/TrkStrawHit.hh"
 // diagnostics
-#include "TrkDiag/inc/EventInfo.hh"
-#include "TrkDiag/inc/TrkInfo.hh"
-#include "TrkDiag/inc/InfoStructHelper.hh"
+#include "Offline/TrkDiag/inc/EventInfo.hh"
+#include "Offline/TrkDiag/inc/TrkInfo.hh"
+#include "Offline/TrkDiag/inc/InfoStructHelper.hh"
 
 // C++ includes.
 #include <iostream>

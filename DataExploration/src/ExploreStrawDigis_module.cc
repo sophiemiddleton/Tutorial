@@ -13,8 +13,8 @@
 // Root includes
 #include "TH1F.h"
 // Mu2e Data Products
-#include "RecoDataProducts/inc/StrawDigi.hh"
-#include "RecoDataProducts/inc/ComboHit.hh"
+#include "Offline/RecoDataProducts/inc/StrawDigi.hh"
+#include "Offline/RecoDataProducts/inc/ComboHit.hh"
 
 namespace mu2e {
 

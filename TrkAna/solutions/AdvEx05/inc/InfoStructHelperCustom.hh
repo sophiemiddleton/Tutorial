@@ -4,27 +4,27 @@
 //
 #ifndef TrkDiag_InfoStructHelperCustom_hh
 #define TrkDiag_InfoStructHelperCustom_hh
-#include "RecoDataProducts/inc/StrawHitIndex.hh"
-#include "RecoDataProducts/inc/KalSeed.hh"
-#include "RecoDataProducts/inc/StrawHitFlag.hh"
-#include "RecoDataProducts/inc/TrkQual.hh"
-#include "RecoDataProducts/inc/RecoCount.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitIndex.hh"
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/StrawHitFlag.hh"
+#include "Offline/RecoDataProducts/inc/TrkQual.hh"
+#include "Offline/RecoDataProducts/inc/RecoCount.hh"
 
-#include "BFieldGeom/inc/BFieldManager.hh"
-#include "GeometryService/inc/DetectorSystem.hh"
-#include "GeometryService/inc/GeomHandle.hh"
-#include "CalorimeterGeom/inc/DiskCalorimeter.hh"
+#include "Offline/BFieldGeom/inc/BFieldManager.hh"
+#include "Offline/GeometryService/inc/DetectorSystem.hh"
+#include "Offline/GeometryService/inc/GeomHandle.hh"
+#include "Offline/CalorimeterGeom/inc/DiskCalorimeter.hh"
 
-#include "TrkDiag/inc/HitCount.hh"
-#include "TrkDiag/inc/TrkInfo.hh"
-#include "TrkDiag/inc/TrkStrawHitInfo.hh"
-#include "TrkDiag/inc/TrkStrawMatInfo.hh"
-#include "TrkDiag/inc/TrkCaloHitInfo.hh"
-#include "TrkDiag/inc/TrkQualInfo.hh"
-#include "TrkDiag/inc/TrkPIDInfo.hh"
-#include "TrkDiag/inc/HelixInfo.hh"
+#include "Offline/TrkDiag/inc/HitCount.hh"
+#include "Offline/TrkDiag/inc/TrkInfo.hh"
+#include "Offline/TrkDiag/inc/TrkStrawHitInfo.hh"
+#include "Offline/TrkDiag/inc/TrkStrawMatInfo.hh"
+#include "Offline/TrkDiag/inc/TrkCaloHitInfo.hh"
+#include "Offline/TrkDiag/inc/TrkQualInfo.hh"
+#include "Offline/TrkDiag/inc/TrkPIDInfo.hh"
+#include "Offline/TrkDiag/inc/HelixInfo.hh"
 
-#include "DataProducts/inc/EventWindowMarker.hh"
+#include "Offline/DataProducts/inc/EventWindowMarker.hh"
 #include "inc/EWMInfo.hh"
 
 #include <vector>

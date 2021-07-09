@@ -1,4 +1,4 @@
-#include "TrkDiag/inc/WeightModule.hh"
+#include "Offline/TrkDiag/inc/WeightModule.hh"
 #include "inc/DoubleWeightPhys.hh"
 
 namespace mu2e {

@@ -1,7 +1,7 @@
 # TrkAna Advanced Tutorial Exercise 1
 # A. Edmonds, June 2019
 
-#include "TrkDiag/fcl/TrkAnaReco.fcl"
+#include "Offline/TrkDiag/fcl/TrkAnaReco.fcl"
 
 process_name : TrkAnaAdvEx01
 

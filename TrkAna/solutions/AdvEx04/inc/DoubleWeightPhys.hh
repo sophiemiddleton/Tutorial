@@ -1,7 +1,7 @@
 #ifndef DoubleWeightPhys_hh_
 #define DoubleWeightPhys_hh_
 
-#include "MCDataProducts/inc/PrimaryParticle.hh"
+#include "Offline/MCDataProducts/inc/PrimaryParticle.hh"
 
 namespace mu2e {
   class DoubleWeightPhys {

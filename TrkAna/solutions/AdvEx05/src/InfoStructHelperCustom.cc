@@ -3,9 +3,9 @@
 // Original author: A. Edmonds (November 2018)
 //
 #include "inc/InfoStructHelperCustom.hh"
-#include "RecoDataProducts/inc/TrkStrawHitSeed.hh"
+#include "Offline/RecoDataProducts/inc/TrkStrawHitSeed.hh"
 
-#include "TrackerGeom/inc/Tracker.hh"
+#include "Offline/TrackerGeom/inc/Tracker.hh"
 #include <cmath>
 
 namespace mu2e {

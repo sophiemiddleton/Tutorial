@@ -1,7 +1,7 @@
 #ifndef ModuleWriting_TrackTime_hh
 #define ModuleWriting_TrackTime_hh
 
-#include "RecoDataProducts/inc/KalSeed.hh"
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 namespace mu2e {
 
   class TrackTime {
