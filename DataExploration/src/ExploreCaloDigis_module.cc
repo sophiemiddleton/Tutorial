@@ -12,6 +12,7 @@
 #include "Offline/GeometryService/inc/GeometryService.hh"
 #include "Offline/CalorimeterGeom/inc/Calorimeter.hh"
 #include "Offline/CalorimeterGeom/inc/DiskCalorimeter.hh"
+#include "Offline/DataProducts/inc/CaloSiPMId.hh"
 
 #include "Offline/RecoDataProducts/inc/CaloDigi.hh"
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
@@ -141,7 +142,7 @@ namespace mu2e {
 
       for (const auto& digi : caloDigis)
       {
-	int crystalId                = cal.caloIDMapper().crystalIDFromSiPMID(digi.SiPMID());
+        int crystalId                = CaloSiPMId(digi.SiPMID()).crystal().id();
 	int diskId                    = cal.crystal(crystalId).diskID();
 	CLHEP::Hep3Vector crystalPos  = cal.geomUtil().mu2eToDiskFF(diskId,cal.crystal(crystalId).position());  //in disk FF frame
 
