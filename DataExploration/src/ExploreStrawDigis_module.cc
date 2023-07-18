@@ -72,4 +72,4 @@ namespace mu2e {
 } // end namespace mu2e
 
 using mu2e::ExploreStrawDigis;
-DEFINE_ART_MODULE(ExploreStrawDigis);
+DEFINE_ART_MODULE(ExploreStrawDigis)
