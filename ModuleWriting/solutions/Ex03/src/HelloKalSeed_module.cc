@@ -55,5 +55,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloKalSeed;
-DEFINE_ART_MODULE(HelloKalSeed);
+DEFINE_ART_MODULE(mu2e::HelloKalSeed)

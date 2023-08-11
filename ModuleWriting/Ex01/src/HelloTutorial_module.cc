@@ -1,10 +1,6 @@
 //
 //  The HelloTutorial plugin; the first example of a module.
 //
-//  $Id: HelloTutorial_module.cc,v 1.5 2013/10/21 21:01:23 kutschke Exp $
-//  $Author: kutschke $
-//  $Date: 2013/10/21 21:01:23 $
-//
 //  Original author Rob Kutschke
 //  Updated by Andy Edmonds (May 2019)
 //
@@ -49,5 +45,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloTutorial;
-DEFINE_ART_MODULE(HelloTutorial);
+DEFINE_ART_MODULE(mu2e::HelloTutorial)

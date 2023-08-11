@@ -59,5 +59,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloFhiclValidation;
-DEFINE_ART_MODULE(HelloFhiclValidation);
+DEFINE_ART_MODULE(mu2e::HelloFhiclValidation)
