@@ -12,7 +12,7 @@
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "solutions/Ex09/inc/TrackTimePtr.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
 
 namespace mu2e {
 
@@ -38,7 +38,8 @@ namespace mu2e {
   };
 
   FilterTrackTimePtr::FilterTrackTimePtr(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDFilter(conf),
+      _conf(conf()),
       _input(conf().input()){
 
   }
@@ -57,5 +58,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::FilterTrackTimePtr;
-DEFINE_ART_MODULE(FilterTrackTimePtr);
+DEFINE_ART_MODULE(mu2e::FilterTrackTimePtr)

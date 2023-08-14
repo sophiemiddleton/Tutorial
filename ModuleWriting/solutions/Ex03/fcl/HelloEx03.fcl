@@ -3,7 +3,7 @@
 
 #include "Offline/fcl/minimalMessageService.fcl"
 
-process : HelloKalSeed
+process_name : HelloKalSeed
 
 source : {
   module_type : RootInput

@@ -11,9 +11,9 @@
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include "art/Framework/Services/Optional/TFileService.h"
+#include "art_root_io/TFileService.h"
 
-#include "solutions/Ex10/inc/OurAssns.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex10/inc/OurAssns.hh"
 
 #include "TH2F.h"
 
@@ -75,5 +75,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HistogramTrackTimeAssns;
-DEFINE_ART_MODULE(HistogramTrackTimeAssns);
+DEFINE_ART_MODULE(mu2e::HistogramTrackTimeAssns)

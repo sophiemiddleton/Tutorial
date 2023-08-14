@@ -40,7 +40,8 @@ namespace mu2e {
   };
 
   HelloFilter::HelloFilter(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDFilter(conf),
+      _conf(conf()),
       _input(conf().input()){
 
   }
@@ -59,5 +60,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloFilter;
-DEFINE_ART_MODULE(HelloFilter);
+DEFINE_ART_MODULE(mu2e::HelloFilter)

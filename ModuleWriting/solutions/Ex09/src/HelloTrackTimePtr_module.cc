@@ -13,7 +13,7 @@
 #include "art/Framework/Principal/Event.h"
 
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "solutions/Ex09/inc/TrackTimePtr.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
 
 
 namespace mu2e {
@@ -40,7 +40,8 @@ namespace mu2e {
   };
 
   HelloTrackTimePtr::HelloTrackTimePtr(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDProducer(conf),
+      _conf(conf()),
       _input(conf().input()){
 
     produces<TrackTimePtrCollection>();
@@ -70,5 +71,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloTrackTimePtr;
-DEFINE_ART_MODULE(HelloTrackTimePtr);
+DEFINE_ART_MODULE(mu2e::HelloTrackTimePtr)

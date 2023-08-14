@@ -42,7 +42,8 @@ namespace mu2e {
   };
 
   HelloCoolKalSeed::HelloCoolKalSeed(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDProducer(conf),
+      _conf(conf()),
       _input(conf().input()),
       _cut(conf().cut()){
 
@@ -67,5 +68,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloCoolKalSeed;
-DEFINE_ART_MODULE(HelloCoolKalSeed);
+DEFINE_ART_MODULE(mu2e::HelloCoolKalSeed)
