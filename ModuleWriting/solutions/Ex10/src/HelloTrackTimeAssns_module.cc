@@ -13,9 +13,8 @@
 #include "art/Framework/Principal/Event.h"
 
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "solutions/Ex08/inc/TrackTime.hh"
-#include "solutions/Ex10/inc/OurAssns.hh"
-
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex10/inc/OurAssns.hh"
 
 namespace mu2e {
 
@@ -41,7 +40,8 @@ namespace mu2e {
   };
 
   HelloTrackTimeAssns::HelloTrackTimeAssns(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDProducer(conf),
+      _conf(conf()),
       _input(conf().input()){
 
     produces<TrackTimeCollection>();
@@ -53,30 +53,35 @@ namespace mu2e {
     std::unique_ptr<TrackTimeCollection> outputTrackTimes(new TrackTimeCollection());
     std::unique_ptr<OurAssns> outputAssns(new OurAssns());
 
-    auto TrackTimeProdID = getProductID<TrackTimeCollection>();
-    auto TrackTimeGetter = event.productGetter(TrackTimeProdID);
+    // Helper struct to transiently save the information needed to make the Assns.
+    struct indexPair{
+      indexPair( size_t ks, size_t tt):kalSeed(ks),trackTime(tt){}
+      size_t kalSeed;
+      size_t trackTime;
+    };
+    std::vector<indexPair> indices;
 
     const auto& kalSeedCollectionHandle = event.getValidHandle<KalSeedCollection>(_input);
     const auto& kalSeedCollection = *kalSeedCollectionHandle;
+
     for (auto i_kalSeed = kalSeedCollection.begin(); i_kalSeed != kalSeedCollection.end(); ++i_kalSeed) {
 
       TrackTime track_time(*i_kalSeed);
       outputTrackTimes->push_back(track_time);
 
-      art::Ptr<KalSeed> kseedPtr(kalSeedCollectionHandle, i_kalSeed-kalSeedCollection.begin());
-      art::Ptr<TrackTime> trackTimePtr(TrackTimeProdID, outputTrackTimes->size()-1, TrackTimeGetter);
-      outputAssns->addSingle(trackTimePtr, kseedPtr);
+      indices.emplace_back( i_kalSeed-kalSeedCollection.begin(), outputTrackTimes->size()-1 );
+
     }
 
-    if (kalSeedCollection.size() != outputTrackTimes->size()) {
-      throw cet::exception("Tutorial") << "Input KalSeedCollection and output TrackTimeCollection are different sizes (" << kalSeedCollection.size() << " and " << outputTrackTimes->size() << " respectively)";
-    }
+    art::PutHandle<TrackTimeCollection> timesH =  event.put(std::move(outputTrackTimes));
 
-    event.put(std::move(outputTrackTimes));
+    // Create the Assns and put it in the event.
+    for ( auto const& i : indices ){
+      outputAssns->addSingle( art::Ptr{ timesH, i.trackTime}, art::Ptr{ kalSeedCollectionHandle, i.kalSeed} );
+    }
     event.put(std::move(outputAssns));
   }
 
 } // end namespace mu2e
 
-using mu2e::HelloTrackTimeAssns;
-DEFINE_ART_MODULE(HelloTrackTimeAssns);
+DEFINE_ART_MODULE(mu2e::HelloTrackTimeAssns)
