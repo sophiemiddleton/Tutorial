@@ -1,16 +1,17 @@
 #ifndef ModuleWriting_TrackTime_hh
 #define ModuleWriting_TrackTime_hh
 
-#include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include <vector>
+
 namespace mu2e {
+
+  class KalSeed;
 
   class TrackTime {
 
   public:
-    TrackTime() : _time(0.0) {}
-    TrackTime(const KalSeed& kseed) {
-      _time = kseed.t0().t0();
-    }
+    TrackTime();
+    TrackTime(const KalSeed& kseed);
 
     const double time() const { return _time; }
 
