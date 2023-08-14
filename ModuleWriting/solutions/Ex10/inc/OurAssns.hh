@@ -4,7 +4,7 @@
 #include "canvas/Persistency/Common/Assns.h"
 
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "solutions/Ex08/inc/TrackTime.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
 namespace mu2e {
   typedef art::Assns<TrackTime, KalSeed> OurAssns;

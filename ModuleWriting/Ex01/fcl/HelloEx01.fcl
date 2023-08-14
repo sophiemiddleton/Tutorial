@@ -4,7 +4,7 @@
 
 #include "Offline/fcl/minimalMessageService.fcl"
 
-process : HelloTutorial
+process_name : HelloTutorial
 
 source : {
   module_type : EmptyEvent

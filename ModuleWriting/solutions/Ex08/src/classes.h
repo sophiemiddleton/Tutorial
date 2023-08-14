@@ -7,6 +7,6 @@
 
 #include <vector>
 #include "canvas/Persistency/Common/Wrapper.h"
-#include "solutions/Ex08/inc/TrackTime.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
 #undef ENABLE_MU2E_GENREFLEX_HACKS

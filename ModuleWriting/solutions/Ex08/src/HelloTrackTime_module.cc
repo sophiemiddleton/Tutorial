@@ -13,7 +13,7 @@
 #include "art/Framework/Principal/Event.h"
 
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "solutions/Ex08/inc/TrackTime.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
 
 namespace mu2e {
@@ -40,7 +40,8 @@ namespace mu2e {
   };
 
   HelloTrackTime::HelloTrackTime(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDProducer(conf),
+      _conf(conf()),
       _input(conf().input()){
 
     produces<TrackTimeCollection>();
@@ -67,5 +68,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloTrackTime;
-DEFINE_ART_MODULE(HelloTrackTime);
+DEFINE_ART_MODULE(mu2e::HelloTrackTime)

@@ -7,6 +7,6 @@
 
 #include <vector>
 #include "canvas/Persistency/Common/Wrapper.h"
-#include "solutions/Ex10/inc/OurAssns.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex10/inc/OurAssns.hh"
 
 #undef ENABLE_MU2E_GENREFLEX_HACKS

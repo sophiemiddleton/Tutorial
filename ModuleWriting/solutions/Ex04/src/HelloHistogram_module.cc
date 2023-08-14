@@ -11,7 +11,7 @@
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include "art/Framework/Services/Optional/TFileService.h"
+#include "art_root_io/TFileService.h"
 
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
@@ -68,5 +68,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::HelloHistogram;
-DEFINE_ART_MODULE(HelloHistogram);
+DEFINE_ART_MODULE(mu2e::HelloHistogram)

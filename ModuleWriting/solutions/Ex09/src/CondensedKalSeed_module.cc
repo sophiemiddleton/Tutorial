@@ -42,7 +42,8 @@ namespace mu2e {
   };
 
   CondensedKalSeed::CondensedKalSeed(const Parameters& conf)
-    : _conf(conf()),
+    : art::EDProducer(conf),
+      _conf(conf()),
       _input(conf().input()),
       _cut(conf().cut()){
 
@@ -67,5 +68,4 @@ namespace mu2e {
 
 } // end namespace mu2e
 
-using mu2e::CondensedKalSeed;
-DEFINE_ART_MODULE(CondensedKalSeed);
+DEFINE_ART_MODULE(mu2e::CondensedKalSeed)

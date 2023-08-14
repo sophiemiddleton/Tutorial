@@ -1,15 +1,11 @@
 #
+# Can an art::Assns and write it to an output file.
 #
-# $Id: hello.fcl,v 1.1 2011/05/18 21:08:02 kutschke Exp $
-# $Author: kutschke $
-# $Date: 2011/05/18 21:08:02 $
 
 #include "Offline/fcl/minimalMessageService.fcl"
 
-# Give this job a name.
-process : HelloTrackTimePtrCoolDataProductsWrite
+process_name : HelloTrackTimePtrCoolDataProductsWrite
 
-# Start form an empty source
 source : {
   module_type : RootInput
 }
