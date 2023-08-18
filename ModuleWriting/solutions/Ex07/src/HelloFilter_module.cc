@@ -1,20 +1,18 @@
-//
+a//
 //  The HelloFilter module
 //
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDFilter.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Offline/RecoDataProducts/inc/KalSeed.hh"
-
 #include "TH1F.h"
+
+#include <iostream>
 
 namespace mu2e {
 
@@ -25,32 +23,30 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
     };
     typedef art::EDFilter::Table<Config> Parameters;
 
     explicit HelloFilter(const Parameters& conf);
 
-    bool filter(art::Event& event);
+    bool filter(art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
+    art::ProductToken<KalSeedCollection> const _kalSeedsToken;
+
   };
 
   HelloFilter::HelloFilter(const Parameters& conf)
     : art::EDFilter(conf),
-      _conf(conf()),
-      _input(conf().input()){
-
+      _kalSeedsToken{consumes<KalSeedCollection>(conf().kalSeedsTag() )}{
   }
 
   bool HelloFilter::filter(art::Event& event){
 
-    const auto& kalSeedCollectionHandle = event.getValidHandle<KalSeedCollection>(_input);
-    const auto& kalSeedCollection = *kalSeedCollectionHandle;
-    if (kalSeedCollection.size()>0) {
+    const auto& kalSeeds = event.getProduct( _kalSeedsToken );
+
+    if (kalSeeds.size()>0) {
       return true;
     }
     else {

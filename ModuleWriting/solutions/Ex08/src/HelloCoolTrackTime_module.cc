@@ -4,15 +4,13 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
+#include <iostream>
 
 namespace mu2e {
 
@@ -23,41 +21,38 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
-      fhicl::Atom<float> cut{Name("cut"), Comment("Time Cut [ns]")};
+      fhicl::Atom<art::InputTag> trackTimesTag{Name("trackTimesTag"), Comment("art::InputTag for a TrackTimeCollection")};
+      fhicl::Atom<float> tcut{Name("tcut"), Comment("Time Cut [ns]")};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
     explicit HelloCoolTrackTime(const Parameters& conf);
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
-    float _cut;
+    art::ProductToken<TrackTimeCollection> const _trackTimesToken;
+    float _tcut;
+
   };
 
   HelloCoolTrackTime::HelloCoolTrackTime(const Parameters& conf)
     : art::EDProducer(conf),
-      _conf(conf()),
-      _input(conf().input()),
-      _cut(conf().cut()){
-
-    produces<TrackTimeCollection>();
-  }
+      _trackTimesToken{consumes<TrackTimeCollection>(conf().trackTimesTag() )},
+    _tcut{conf().tcut()}{
+      produces<TrackTimeCollection>();
+    }
 
   void HelloCoolTrackTime::produce(art::Event& event){
 
-    std::unique_ptr<TrackTimeCollection> outputTrackTimes(new TrackTimeCollection());
+    auto outputTrackTimes = std::make_unique<TrackTimeCollection>( TrackTimeCollection() );
 
-    const auto& trackTimeCollectionHandle = event.getValidHandle<TrackTimeCollection>(_input);
-    const auto& trackTimeCollection = *trackTimeCollectionHandle;
-    for (const auto& i_trackTime : trackTimeCollection) {
+    const auto& trackTimes = event.getProduct( _trackTimesToken );
+    for (const auto& trackTime : trackTimes ) {
 
-      if (i_trackTime.time() > _cut) {
-	outputTrackTimes->push_back(i_trackTime);
+      if ( trackTime.time() > _tcut) {
+	outputTrackTimes->push_back(trackTime);
       }
     }
 

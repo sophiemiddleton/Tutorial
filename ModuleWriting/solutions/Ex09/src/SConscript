@@ -34,6 +34,17 @@ helper.make_plugins( [ mainlib,
                        rootlibs,
                      ] )
 
+helper.make_dict_and_map( [ mainlib,
+                            'art_Persistency_Common',
+                            'art_Persistency_Provenance',
+                            'art_Utilities',
+                            'art_Utilities',
+                            'canvas',
+                            'CLHEP',
+                            'cetlib',
+                            'cetlib_except',
+                            'Core'
+                          ] )
 
 # This tells emacs to view this file in python mode.
 # Local Variables:

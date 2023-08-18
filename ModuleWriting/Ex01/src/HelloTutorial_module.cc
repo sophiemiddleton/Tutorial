@@ -24,7 +24,7 @@ namespace mu2e {
 
     explicit HelloTutorial(const Parameters& conf);
 
-    void analyze(const art::Event& event);
+    void analyze(const art::Event& event) override;
 
   private:
     Config _conf;

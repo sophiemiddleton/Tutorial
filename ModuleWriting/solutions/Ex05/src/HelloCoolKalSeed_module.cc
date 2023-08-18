@@ -21,14 +21,14 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("KalSeedsTag")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
       fhicl::Atom<float>         tcut       {Name("tcut"),        Comment("Time Cut [ns]")};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
     explicit HelloCoolKalSeed(const Parameters& conf);
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
 

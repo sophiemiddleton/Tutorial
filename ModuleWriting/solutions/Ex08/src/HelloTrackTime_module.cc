@@ -4,17 +4,14 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Offline/RecoDataProducts/inc/KalSeed.hh"
-#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
-
+#include <iostream>
 
 namespace mu2e {
 
@@ -25,42 +22,41 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
     explicit HelloTrackTime(const Parameters& conf);
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
+    art::ProductToken<KalSeedCollection> const _kalSeedsToken;
   };
 
   HelloTrackTime::HelloTrackTime(const Parameters& conf)
     : art::EDProducer(conf),
-      _conf(conf()),
-      _input(conf().input()){
-
+      _kalSeedsToken{consumes<KalSeedCollection>(conf().kalSeedsTag() )}{
     produces<TrackTimeCollection>();
   }
 
   void HelloTrackTime::produce(art::Event& event){
 
-    std::unique_ptr<TrackTimeCollection> outputTrackTimes(new TrackTimeCollection());
+    auto outputTrackTimes = std::make_unique<TrackTimeCollection>( TrackTimeCollection() );
 
-    const auto& kalSeedCollectionHandle = event.getValidHandle<KalSeedCollection>(_input);
-    const auto& kalSeedCollection = *kalSeedCollectionHandle;
-    for (const auto& i_kalSeed : kalSeedCollection) {
+    const auto& kalSeeds = event.getProduct( _kalSeedsToken );
 
-      TrackTime track_time(i_kalSeed);
-      outputTrackTimes->push_back(track_time);
+    outputTrackTimes->reserve( kalSeeds.size() );
+    for (const auto& kalSeed : kalSeeds) {
+      outputTrackTimes->emplace_back(kalSeed);
     }
 
-    if (kalSeedCollection.size() != outputTrackTimes->size()) {
-      throw cet::exception("Tutorial") << "Input KalSeedCollection and output TrackTimeCollection are different sizes (" << kalSeedCollection.size() << " and " << outputTrackTimes->size() << " respectively)";
+    if (kalSeeds.size() != outputTrackTimes->size()) {
+      throw cet::exception("Tutorial")
+        << "Input KalSeedCollection and output TrackTimeCollection are different sizes ("
+        << kalSeeds.size() << " and "
+        << outputTrackTimes->size() << " respectively)";
     }
 
     event.put(std::move(outputTrackTimes));

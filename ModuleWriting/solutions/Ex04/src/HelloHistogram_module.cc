@@ -24,14 +24,14 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("KalSeedsTag")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
     };
     typedef art::EDAnalyzer::Table<Config> Parameters;
 
     explicit HelloHistogram(const Parameters& conf);
 
-    void beginJob();
-    void analyze(const art::Event& event);
+    void beginJob() override;
+    void analyze(const art::Event& event) override;
 
   private:
     art::ProductToken<KalSeedCollection> const _kalSeedsToken;
