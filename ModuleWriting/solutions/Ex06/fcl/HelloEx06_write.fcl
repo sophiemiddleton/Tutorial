@@ -18,8 +18,8 @@ physics :{
   producers: {
     cool: {
       module_type : HelloCoolKalSeed
-      input : "KFFDeM"
-      cut : 900
+      kalSeedsTag : "KFFDeM"
+      tcut        : 900   # ns
     }
   }
 
@@ -35,7 +35,7 @@ outputs : {
   MyOutput : {
     module_type: RootOutput
     SelectEvents : [p1]
-    fileName : "my-art-file.art"
+    fileName     : "out/Ex06.art"
     outputCommands : [ "drop *_*_*_*",
     		       "keep *_cool_*_*"
 		     ]

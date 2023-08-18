@@ -18,15 +18,15 @@ physics :{
   producers : {
     cool : {
       module_type : HelloCoolKalSeed
-      input : KFFDeM
-      cut : 700
+      kalSeedsTag : KFFDeM
+      tcut        : 700     # ns
     }
   }
 
   analyzers: {
     histogram: {
       module_type : HelloHistogram
-      input : "cool"
+      kalSeedsTag : "cool"
     }
   }
 
@@ -38,4 +38,4 @@ physics :{
 
 }
 
-services.TFileService.fileName : "out.root"
+services.TFileService.fileName : "out/Ex05.root"
