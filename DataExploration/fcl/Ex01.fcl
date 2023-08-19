@@ -5,21 +5,15 @@ process_name : ExploreStrawDigis
 
 source : { module_type : RootInput }
 
-services : @local::Services.Reco
-services.TFileService.fileName : "ExploreStrawDigis.root"
-
-physics :
-{
-  producers : {} 
+physics : {
   analyzers : {
     ESD : {
-      module_type : ExploreStrawDigis
-      StrawDigis : SelectRecoMC
+      module_type   : ExploreStrawDigis
+      StrawDigisTag : SelectRecoMC
     }
   }
 
-  MyTrigPath : []
   MyEndPath : [ ESD ]
 }
 
-
+services.TFileService.fileName : "out/ExploreStrawDigis.root"
