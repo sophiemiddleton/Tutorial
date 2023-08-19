@@ -1,4 +1,4 @@
-a//
+//
 //  The HelloFilter module
 //
 //  Original author Andy Edmonds
