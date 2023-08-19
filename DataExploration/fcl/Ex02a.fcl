@@ -1,0 +1,31 @@
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardServices.fcl"
+
+process_name: CaloTutorial
+
+source: {
+   module_type: RootInput
+   maxEvents : 500
+}
+
+services : @local::Services.Core
+
+physics :
+{
+    analyzers:
+    {
+       DumpCaloDigis:
+       {
+            module_type    : ExploreCaloDigis
+            CaloDigis      : SelectRecoMC
+            CaloClusters   : CaloClusterMaker
+            runExercise    : true
+        }
+     }
+
+    end1: [DumpCaloDigis]
+
+    end_paths:     [end1]
+}
+
+services.TFileService.fileName : "out/ExploreCaloDigis.root"
