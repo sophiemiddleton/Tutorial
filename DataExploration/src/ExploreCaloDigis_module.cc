@@ -1,13 +1,8 @@
 //
-// An EDAnalyzer module that roduce ntuples for calo digis
+// An EDAnalyzer module that produces ntuples for calo digis
 //
 // Original author Bertrand Echenard
 //
-#include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Core/ModuleMacros.h"
-#include "art/Framework/Principal/Event.h"
-#include "art_root_io/TFileService.h"
-
 #include "Offline/GeometryService/inc/GeomHandle.hh"
 #include "Offline/GeometryService/inc/GeometryService.hh"
 #include "Offline/CalorimeterGeom/inc/Calorimeter.hh"
@@ -17,6 +12,11 @@
 #include "Offline/RecoDataProducts/inc/CaloDigi.hh"
 #include "Offline/RecoDataProducts/inc/CaloCluster.hh"
 
+#include "art/Framework/Core/EDAnalyzer.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/Event.h"
+#include "art_root_io/TFileService.h"
+
 #include "TNtuple.h"
 #include "TH2F.h"
 
@@ -25,60 +25,56 @@
 #include <string>
 #include <vector>
 
-
-
 namespace mu2e {
-
 
   class ExploreCaloDigis : public art::EDAnalyzer {
 
      public:
 
-       struct Config 
+       struct Config
        {
           using Name    = fhicl::Name;
           using Comment = fhicl::Comment;
-          fhicl::Atom<art::InputTag> caloCrystalTag{Name("CaloDigis"),    Comment("CaloDigi Collection"), art::InputTag()};
-          fhicl::Atom<art::InputTag> caloClusterTag{Name("CaloClusters"), Comment("CaloCluster Collection"), art::InputTag()};
-          fhicl::Atom<bool>          runExercise{Name("runExercise"),     Comment("Include production of Exercise Plots")};
+          fhicl::Atom<art::InputTag> caloDigisTag{Name("CaloDigis"),       Comment("Input tag for a CaloDigiCollection") };
+          fhicl::Atom<art::InputTag> caloClustersTag{Name("CaloClusters"), Comment("Input tag for a CaloClusterCollection")};
+          fhicl::Atom<bool>          runExercise{Name("runExercise"),      Comment("Include production of Exercise Plots")};
        };
        typedef art::EDAnalyzer::Table<Config> Parameters;
 
-       
        explicit ExploreCaloDigis(const Parameters& conf);
-       virtual ~ExploreCaloDigis() { }
 
-       virtual void beginJob();
-       virtual void endJob() {};
-       virtual void analyze(const art::Event& e);
-
+       virtual void beginJob() override;
+       virtual void analyze(const art::Event& e) override;
 
      private:
 
-       Config conf_;
+       art::ProductToken<CaloDigiCollection>    const _caloDigisToken;
+       art::ProductToken<CaloClusterCollection> const _caloClustersToken;
 
-       TTree* Ntup_;
-       int    evt_,run_, nDigis_,cryId_[16384],cryDiskId_[16384], nCluster_,_cluNumCrystals[16384], cluIsSplit_[16384];
-       float  cryEtot_,cryTime_[16384],cryEnergyDep_[16384],cryPosX_[16384],cryPosY_[16384],cryPosZ_[16384];
-       float  cluEnergy_[16384],cluTime_[16384],cluCogX_[16384],cluCogY_[16384],cluCogZ_[16384],cluE1_[16384],cluE9_[16384],cluE25_[16384],clu2ndMoment_[16384];
+       static constexpr unsigned arrayDim=16384;
+       TTree* Ntup_ = nullptr;
+       int    evt_,run_, nDigis_,cryId_[arrayDim],cryDiskId_[arrayDim], nCluster_,_cluNumCrystals[arrayDim], cluIsSplit_[arrayDim];
+       float  cryEtot_,cryTime_[arrayDim],cryEnergyDep_[arrayDim],cryPosX_[arrayDim],cryPosY_[arrayDim],cryPosZ_[arrayDim];
+       float  cluEnergy_[arrayDim],cluTime_[arrayDim],cluCogX_[arrayDim],cluCogY_[arrayDim],cluCogZ_[arrayDim],cluE1_[arrayDim],cluE9_[arrayDim],cluE25_[arrayDim],clu2ndMoment_[arrayDim];
        std::vector<std::vector<int> > cluCrystalList_;
-              
-       TH1F *crystalEnergy_; 
-       TH1F *crystalTime_;
-       TH1F *clusterMaxCrystalHit_;
-       TH1F *clusterEnergyHigh_;
-       TH1F *clusterEnergySplit_;
-       TH1F *clusterEnergyNoSplit_;
+
+       TH1F *crystalEnergy_        = nullptr;
+       TH1F *crystalTime_          = nullptr;
+       TH1F *clusterMaxCrystalHit_ = nullptr;
+       TH1F *clusterEnergyHigh_    = nullptr;
+       TH1F *clusterEnergySplit_   = nullptr;
+       TH1F *clusterEnergyNoSplit_ = nullptr;
+
+       bool _runExercise = false;
   };
 
 
   ExploreCaloDigis::ExploreCaloDigis(const Parameters& conf) :
     art::EDAnalyzer(conf),
-    conf_(conf()),    
-    Ntup_(0)
+    _caloDigisToken{consumes<CaloDigiCollection>(conf().caloDigisTag())},
+    _caloClustersToken{consumes<CaloClusterCollection>(conf().caloClustersTag())},
+    _runExercise(conf().runExercise())
   {
-     consumes<CaloHitCollection>(conf_.caloCrystalTag());
-     consumes<CaloClusterCollection>(conf_.caloClusterTag());
   }
 
   void ExploreCaloDigis::beginJob(){
@@ -108,12 +104,12 @@ namespace mu2e {
        Ntup_->Branch("cluCrystalList", &cluCrystalList_);
 
 
-       crystalEnergy_        = tfs->make<TH1F>("cryHitEnergy",         "Energy deposited by each crystal hit",    100,   0., 50.   );
-       crystalTime_          = tfs->make<TH1F>("cryHitTime",           "Time of crystal hit",                     100,   0., 2000. );       
-       clusterEnergyHigh_    = tfs->make<TH1F>("clusterEnergyHigh",    "Cluster energy radius > 400",             150,   0., 150.  );
-       clusterMaxCrystalHit_ = tfs->make<TH1F>("clusterMaxCrystalHit", "Energy most energetic hit in cluster",    100,   0.,  50.  );
-       clusterEnergySplit_   = tfs->make<TH1F>("clusterEnergySplit",   "Cluster energy for single proto-cluster", 150,   0., 150.  );
-       clusterEnergyNoSplit_ = tfs->make<TH1F>("clusterEnergyNoSplit", "Cluster energy for many proto-cluster",   150,   0., 150.  );
+       crystalEnergy_        = tfs->make<TH1F>("cryHitEnergy",         "Sum of ADC values in each digi waveform", 100,   0., 25000. );
+       crystalTime_          = tfs->make<TH1F>("cryHitTime",           "Time of crystal hit",                     100,   0.,  2000. );
+       clusterEnergyHigh_    = tfs->make<TH1F>("clusterEnergyHigh",    "Cluster energy radius > 400",             150,   0.,   150. );
+       clusterMaxCrystalHit_ = tfs->make<TH1F>("clusterMaxCrystalHit", "Energy most energetic hit in cluster",    100,   0.,    50. );
+       clusterEnergySplit_   = tfs->make<TH1F>("clusterEnergySplit",   "Cluster energy for single proto-cluster", 150,   0.,   150. );
+       clusterEnergyNoSplit_ = tfs->make<TH1F>("clusterEnergyNoSplit", "Cluster energy for many proto-cluster",   150,   0.,   150. );
 
   }
 
@@ -126,13 +122,10 @@ namespace mu2e {
       const Calorimeter& cal = *(GeomHandle<Calorimeter>());
 
       //Calorimeter crystal hits (average from readouts)
-      auto caloDigiHandle = event.getValidHandle<CaloDigiCollection>(conf_.caloCrystalTag());
-      const auto& caloDigis = *caloDigiHandle;
+      auto const& caloDigis = event.getProduct(_caloDigisToken);
 
       //Calorimeter clusters
-      auto caloClusterHandle = event.getValidHandle<CaloClusterCollection>(conf_.caloClusterTag());
-      const auto& caloClusters = *caloClusterHandle;
-
+      auto caloClusters = event.getProduct(_caloClustersToken);
 
       evt_ = event.id().event();
       run_ = event.run();
@@ -142,7 +135,7 @@ namespace mu2e {
 
       for (const auto& digi : caloDigis)
       {
-        int crystalId                = CaloSiPMId(digi.SiPMID()).crystal().id();
+        int crystalId                 = CaloSiPMId(digi.SiPMID()).crystal().id();
 	int diskId                    = cal.crystal(crystalId).diskID();
 	CLHEP::Hep3Vector crystalPos  = cal.geomUtil().mu2eToDiskFF(diskId,cal.crystal(crystalId).position());  //in disk FF frame
 
@@ -186,11 +179,11 @@ namespace mu2e {
       }
 
       Ntup_->Fill();
-      
-      
-      
-      
-      if (conf_.runExercise())
+
+
+
+
+      if (_runExercise)
       {
            //------ Plot energy / time of each crystal hit ---------------
 
@@ -220,22 +213,22 @@ namespace mu2e {
                //find the most energetic hit in the crystal hit list (hits are energy ordered but we'll assume they are not)
                auto crystalHitList = cluster.caloHitsPtrVector();
                auto maxHit = std::max_element(crystalHitList.begin(),crystalHitList.end(),
-                                              [](art::Ptr<CaloHit>& a, art::Ptr<CaloHit>& b) 
+                                              [](art::Ptr<CaloHit>& a, art::Ptr<CaloHit>& b)
                                               {return a->energyDep() > b->energyDep();});
                auto maxCrystalPtr = *maxHit;
 
                clusterMaxCrystalHit_->Fill(maxCrystalPtr->energyDep());
            }
       }
-      
-      
-      
-      
+
+
+
+
 
   }
 
 
 
-}  
+}
 
 DEFINE_ART_MODULE(mu2e::ExploreCaloDigis)
