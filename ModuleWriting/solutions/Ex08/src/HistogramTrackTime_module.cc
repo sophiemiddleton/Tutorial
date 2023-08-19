@@ -4,10 +4,8 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
@@ -15,7 +13,7 @@
 
 #include "TH1F.h"
 
-#include "Tutorial/ModuleWriting/solutions/Ex08/inc/TrackTime.hh"
+#include <iostream>
 
 namespace mu2e {
 
@@ -26,26 +24,24 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> trackTimesTag{Name("trackTimesTag"), Comment("art::InputTag for a TrackTimeCollection")};
     };
     typedef art::EDAnalyzer::Table<Config> Parameters;
 
     explicit HistogramTrackTime(const Parameters& conf);
 
-    void beginJob();
-    void analyze(const art::Event& event);
+    void beginJob() override;
+    void analyze(const art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
-    TH1F* _hTrackTimes;
+    art::ProductToken<TrackTimeCollection> const _trackTimesToken;
+    TH1F* _hTrackTimes = nullptr;
   };
 
   HistogramTrackTime::HistogramTrackTime(const Parameters& conf)
     : art::EDAnalyzer(conf),
-      _conf(conf()),
-      _input(conf().input()){
+      _trackTimesToken{consumes<TrackTimeCollection>(conf().trackTimesTag() )}{
   }
 
   void HistogramTrackTime::beginJob() {
@@ -59,10 +55,9 @@ namespace mu2e {
 
   void HistogramTrackTime::analyze(const art::Event& event){
 
-    const auto& trackTimeCollectionHandle = event.getValidHandle<TrackTimeCollection>(_input);
-    const auto& trackTimeCollection = *trackTimeCollectionHandle;
-    for (const auto& i_trackTime : trackTimeCollection) {
-      _hTrackTimes->Fill(i_trackTime.time());
+    const auto& trackTimes = event.getProduct( _trackTimesToken );
+    for (const auto& trackTime : trackTimes) {
+      _hTrackTimes->Fill(trackTime.time());
     }
   }
 

@@ -18,20 +18,20 @@ physics :{
   producers: {
     trackTime : {
       module_type : HelloTrackTimePtr
-      input : "KFFDeM"
+      kalSeedsTag : "KFFDeM"
     }
 
     cool: {
-      module_type : HelloCoolTrackTimePtr
-      input : "trackTime"
-      cut : 900
+      module_type      : HelloCoolTrackTimePtr
+      trackTimePtrsTag : "trackTime"
+      tcut             : 900
     }
   }
 
   filters : {
     helloFilter : {
-      module_type : FilterTrackTimePtr
-      input : "cool"
+      module_type      : FilterTrackTimePtr
+      trackTimePtrsTag : "cool"
     }
   }
 
@@ -47,7 +47,7 @@ outputs : {
   MyOutput : {
     module_type: RootOutput
     SelectEvents : [p1]
-    fileName : "my-art-file.art"
+    fileName : "out/Ex09_Opt01.art"
     outputCommands : [ "drop *_*_*_*",
     		       "keep *_cool_*_*"
 		     ]

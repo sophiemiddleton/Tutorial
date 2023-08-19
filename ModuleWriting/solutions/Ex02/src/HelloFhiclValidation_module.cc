@@ -4,14 +4,12 @@
 //  Original author Andy Edmonds (May 2019)
 //
 
-// C++ includes.
-#include <iostream>
-
-// Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "fhiclcpp/types/OptionalAtom.h"
+
+#include <iostream>
 
 namespace mu2e {
 
@@ -30,7 +28,7 @@ namespace mu2e {
 
     explicit HelloFhiclValidation(const Parameters& conf);
 
-    void analyze(const art::Event& event);
+    void analyze(const art::Event& event) override;
 
   private:
     Config _conf;
@@ -45,7 +43,6 @@ namespace mu2e {
       _conf(conf()),
       _number(conf().number()),
       _defaultNumber(conf().defaultNumber()){
-
   }
 
   void HelloFhiclValidation::analyze(const art::Event& event){

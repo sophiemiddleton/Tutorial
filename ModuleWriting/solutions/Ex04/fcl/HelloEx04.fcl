@@ -1,5 +1,5 @@
 #
-#
+# 
 #
 
 #include "Offline/fcl/minimalMessageService.fcl"
@@ -18,18 +18,14 @@ physics :{
   analyzers: {
     hello: {
       module_type : HelloHistogram
-      input : "KFFDeM"
-       # input : "KKDeM"
+      kalSeedsTag : "KFFDeM"
     }
   }
 
-  p1 : [ ]
   e1 : [hello]
 
-  trigger_paths  : [p1]
   end_paths      : [e1]
 
 }
 
-
-services.TFileService.fileName : "out.root"
+services.TFileService.fileName : "out/Ex04.root"

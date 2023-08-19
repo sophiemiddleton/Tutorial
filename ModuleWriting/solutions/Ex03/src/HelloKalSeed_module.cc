@@ -4,15 +4,13 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Offline/RecoDataProducts/inc/KalSeed.hh"
+#include <iostream>
 
 namespace mu2e {
 
@@ -23,34 +21,32 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
     };
     typedef art::EDAnalyzer::Table<Config> Parameters;
 
     explicit HelloKalSeed(const Parameters& conf);
 
-    void analyze(const art::Event& event);
+    void analyze(const art::Event& event) override;
 
   private:
-    Config _conf;
+    art::ProductToken<KalSeedCollection> const _kalSeedsToken;
 
-    art::InputTag _input;
   };
 
   HelloKalSeed::HelloKalSeed(const Parameters& conf)
     : art::EDAnalyzer(conf),
-      _conf(conf()),
-      _input(conf().input()){
-
-    std::cout << "The input tag is " << _input << std::endl;
+      _kalSeedsToken{consumes<KalSeedCollection>(conf().kalSeedsTag() )}{
+    std::cout << "Tag for the KalSeeds is: " << conf().kalSeedsTag() << std::endl;
   }
 
   void HelloKalSeed::analyze(const art::Event& event){
-    const auto& kalSeedCollectionHandle = event.getValidHandle<KalSeedCollection>(_input);
-    const auto& kalSeedCollection = *kalSeedCollectionHandle;
-    for (const auto& i_kalSeed : kalSeedCollection) {
-      std::cout << "t0 = " << i_kalSeed.t0().t0() << " ns" << std::endl;
+
+    const auto& kalSeeds = event.getProduct( _kalSeedsToken );
+    for (const auto& kSeed : kalSeeds) {
+      std::cout << "t0 = " << kSeed.t0().t0() << " ns" << std::endl;
     }
+
   }
 
 } // end namespace mu2e

@@ -4,17 +4,15 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Offline/RecoDataProducts/inc/KalSeed.hh"
-
 #include "TH1F.h"
+
+#include <iostream>
 
 namespace mu2e {
 
@@ -25,41 +23,37 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
-      fhicl::Atom<float> cut{Name("cut"), Comment("momentum cut [MeV/c]")};
+      fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("art::InputTag for a KalSeedsCollection")};
+      fhicl::Atom<float> pcut{Name("pcut"), Comment("Momentum cut [MeV/c]")};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
     explicit CondensedKalSeed(const Parameters& conf);
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
-    float _cut;
+    art::ProductToken<KalSeedCollection> const _kalSeedsToken;
+    float _pcut;
   };
 
   CondensedKalSeed::CondensedKalSeed(const Parameters& conf)
     : art::EDProducer(conf),
-      _conf(conf()),
-      _input(conf().input()),
-      _cut(conf().cut()){
-
+      _kalSeedsToken{consumes<KalSeedCollection>(conf().kalSeedsTag() )},
+      _pcut(conf().pcut()){
     produces<KalSeedCollection>();
   }
 
   void CondensedKalSeed::produce(art::Event& event){
 
-    std::unique_ptr<KalSeedCollection> outputKalSeeds(new KalSeedCollection());
+    auto outputKalSeeds = std::make_unique<KalSeedCollection>( KalSeedCollection() );
 
-    const auto& kalSeedCollectionHandle = event.getValidHandle<KalSeedCollection>(_input);
-    const auto& kalSeedCollection = *kalSeedCollectionHandle;
-    for (const auto& i_kalSeed : kalSeedCollection) {
+    const auto& kalSeeds = event.getProduct( _kalSeedsToken );
+    for (const auto& kalSeed : kalSeeds ) {
 
-      if (i_kalSeed.segments().begin()->mom() > _cut) {
-	outputKalSeeds->push_back(i_kalSeed);
+      if ( kalSeed.segments().begin()->mom() > _pcut) {
+	outputKalSeeds->push_back(kalSeed);
       }
     }
 

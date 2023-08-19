@@ -17,18 +17,17 @@ services : {
 physics :{
   analyzers: {
     hello: {
-      module_type : HistogramTrackTimePtr
-      input : "cool"
+      module_type      : HistogramTrackTimePtr
+      trackTimePtrsTag : "cool"
+
     }
   }
 
-  p1 : [ ]
   e1 : [hello]
 
-  trigger_paths  : [p1]
   end_paths      : [e1]
 
 }
 
 
-services.TFileService.fileName : "out.root"
+services.TFileService.fileName : "out/Ex09.root"

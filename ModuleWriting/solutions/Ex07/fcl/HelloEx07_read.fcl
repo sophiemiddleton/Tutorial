@@ -18,7 +18,7 @@ physics :{
   analyzers: {
     hello: {
       module_type : HelloHistogram
-      input : "cool"
+      kalSeedsTag : "cool"
     }
   }
 
@@ -30,5 +30,4 @@ physics :{
 
 }
 
-
-services.TFileService.fileName : "out.root"
+services.TFileService.fileName : "out/Ex07.root"

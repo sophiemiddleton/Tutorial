@@ -5,13 +5,11 @@
 //  Updated by Andy Edmonds (May 2019)
 //
 
-// C++ includes.
-#include <iostream>
-
-// Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
+
+#include <iostream>
 
 namespace mu2e {
 
@@ -26,7 +24,7 @@ namespace mu2e {
 
     explicit HelloTutorial(const Parameters& conf);
 
-    void analyze(const art::Event& event);
+    void analyze(const art::Event& event) override;
 
   private:
     Config _conf;

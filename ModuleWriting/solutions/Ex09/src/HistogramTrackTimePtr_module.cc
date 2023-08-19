@@ -4,18 +4,16 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art_root_io/TFileService.h"
 
-#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
-
 #include "TH1F.h"
+
+#include <iostream>
 
 namespace mu2e {
 
@@ -26,27 +24,25 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> trackTimePtrsTag{Name("trackTimePtrsTag"), Comment("art::InputTag for a TrackTimePtrCollection")};
     };
     typedef art::EDAnalyzer::Table<Config> Parameters;
 
     explicit HistogramTrackTimePtr(const Parameters& conf);
 
-    void beginJob();
-    void analyze(const art::Event& event);
+    void beginJob() override;
+    void analyze(const art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
-    TH1F* _hTrackTimePtrs;
-    TH1I* _hNKalSeedHits;
+    art::ProductToken<TrackTimePtrCollection> const _trackTimePtrsToken;
+    TH1F* _hTrackTimePtrs = nullptr;
+    TH1I* _hNKalSeedHits  = nullptr;
   };
 
   HistogramTrackTimePtr::HistogramTrackTimePtr(const Parameters& conf)
     : art::EDAnalyzer(conf),
-      _conf(conf()),
-      _input(conf().input()){
+      _trackTimePtrsToken{consumes<TrackTimePtrCollection>(conf().trackTimePtrsTag() )}{
   }
 
   void HistogramTrackTimePtr::beginJob() {
@@ -56,19 +52,15 @@ namespace mu2e {
     double t0_width = 10;
     int n_t0_bins = (max_t0 - min_t0) / t0_width;
     _hTrackTimePtrs = tfs->make<TH1F>("hTrackTimePtrs","Track t0", n_t0_bins,min_t0,max_t0);
-
-    _hNKalSeedHits = tfs->make<TH1I>("hNKalSeedHits","N KalSeed Hits", 100,0,100);
+    _hNKalSeedHits  = tfs->make<TH1I>("hNKalSeedHits","N KalSeed Hits", 100,0,100);
   }
 
   void HistogramTrackTimePtr::analyze(const art::Event& event){
 
-    const auto& trackTimeCollectionHandle = event.getValidHandle<TrackTimePtrCollection>(_input);
-    const auto& trackTimeCollection = *trackTimeCollectionHandle;
-    for (const auto& i_trackTime : trackTimeCollection) {
-      _hTrackTimePtrs->Fill(i_trackTime.time());
-
-      const auto& kseed = *i_trackTime.kalSeedPtr();
-      _hNKalSeedHits->Fill(kseed.hits().size());
+    const auto& trackTimePtrs = event.getProduct(_trackTimePtrsToken);
+    for (const auto& trackTimePtr: trackTimePtrs) {
+      _hTrackTimePtrs->Fill(trackTimePtr.time());
+      _hNKalSeedHits->Fill( trackTimePtr.kalSeedPtr()->hits().size());
     }
   }
 

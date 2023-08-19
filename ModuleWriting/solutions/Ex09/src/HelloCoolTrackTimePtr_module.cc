@@ -23,41 +23,38 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
-      fhicl::Atom<float> cut{Name("cut"), Comment("Time Cut [ns]")};
+      fhicl::Atom<art::InputTag> trackTimePtrsTag{Name("trackTimePtrsTag"), Comment("art::InputTag for a TrackTimePtrCollection")};
+      fhicl::Atom<float> tcut{Name("tcut"), Comment("Time Cut [ns]")};
     };
     typedef art::EDProducer::Table<Config> Parameters;
 
     explicit HelloCoolTrackTimePtr(const Parameters& conf);
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
-    Config _conf;
 
-    art::InputTag _input;
-    float _cut;
+    art::ProductToken<TrackTimePtrCollection> const _trackTimePtrsToken;
+    float _tcut;
   };
 
   HelloCoolTrackTimePtr::HelloCoolTrackTimePtr(const Parameters& conf)
     : art::EDProducer(conf),
-      _conf(conf()),
-      _input(conf().input()),
-      _cut(conf().cut()){
+      _trackTimePtrsToken{consumes<TrackTimePtrCollection>(conf().trackTimePtrsTag() )},
+      _tcut(conf().tcut()){
 
     produces<TrackTimePtrCollection>();
   }
 
   void HelloCoolTrackTimePtr::produce(art::Event& event){
 
-    std::unique_ptr<TrackTimePtrCollection> outputTrackTimePtrs(new TrackTimePtrCollection());
+    auto outputTrackTimePtrs = std::make_unique<TrackTimePtrCollection>(TrackTimePtrCollection());
 
-    const auto& trackTimeCollectionHandle = event.getValidHandle<TrackTimePtrCollection>(_input);
-    const auto& trackTimeCollection = *trackTimeCollectionHandle;
-    for (const auto& i_trackTime : trackTimeCollection) {
+    const auto& trackTimePtrs = event.getProduct(_trackTimePtrsToken);
+    for (const auto& trackTimePtr : trackTimePtrs ) {
 
-      if (i_trackTime.time() > _cut) {
-	outputTrackTimePtrs->push_back(i_trackTime);
+      if (trackTimePtr.time() > _tcut) {
+	outputTrackTimePtrs->push_back(trackTimePtr);
       }
     }
 

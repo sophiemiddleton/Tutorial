@@ -4,15 +4,13 @@
 //  Original author Andy Edmonds
 //
 
-// C++ includes.
-#include <iostream>
+#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
 
-// Framework includes.
 #include "art/Framework/Core/EDFilter.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 
-#include "Tutorial/ModuleWriting/solutions/Ex09/inc/TrackTimePtr.hh"
+#include <iostream>
 
 namespace mu2e {
 
@@ -23,37 +21,28 @@ namespace mu2e {
       using Name=fhicl::Name;
       using Comment=fhicl::Comment;
 
-      fhicl::Atom<art::InputTag> input{Name("input"), Comment("Input")};
+      fhicl::Atom<art::InputTag> trackTimePtrsTag{Name("trackTimePtrsTag"), Comment("art::InputTag for a TrackTimePtrCollection")};
     };
     typedef art::EDFilter::Table<Config> Parameters;
 
     explicit FilterTrackTimePtr(const Parameters& conf);
 
-    bool filter(art::Event& event);
+    bool filter(art::Event& event) override;
 
   private:
-    Config _conf;
-
-    art::InputTag _input;
+    art::ProductToken<TrackTimePtrCollection> const _trackTimePtrsToken;
   };
 
   FilterTrackTimePtr::FilterTrackTimePtr(const Parameters& conf)
     : art::EDFilter(conf),
-      _conf(conf()),
-      _input(conf().input()){
-
+      _trackTimePtrsToken{consumes<TrackTimePtrCollection>(conf().trackTimePtrsTag() )}{
   }
 
   bool FilterTrackTimePtr::filter(art::Event& event){
 
-    const auto& trackTimeCollectionHandle = event.getValidHandle<TrackTimePtrCollection>(_input);
-    const auto& trackTimeCollection = *trackTimeCollectionHandle;
-    if (trackTimeCollection.size()>0) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    const auto& trackTimePtrs = event.getProduct(_trackTimePtrsToken);
+    return (trackTimePtrs.size()>0) ? true: false;
+
   }
 
 } // end namespace mu2e
