@@ -58,7 +58,7 @@ namespace mu2e {
        float  cluEnergy_[arrayDim],cluTime_[arrayDim],cluCogX_[arrayDim],cluCogY_[arrayDim],cluCogZ_[arrayDim],cluE1_[arrayDim],cluE9_[arrayDim],cluE25_[arrayDim],clu2ndMoment_[arrayDim];
        std::vector<std::vector<int> > cluCrystalList_;
 
-       TH1F *crystalEnergy_        = nullptr;
+       TH1F *crystalADCSum_        = nullptr;
        TH1F *crystalTime_          = nullptr;
        TH1F *clusterMaxCrystalHit_ = nullptr;
        TH1F *clusterEnergyHigh_    = nullptr;
@@ -104,7 +104,7 @@ namespace mu2e {
        Ntup_->Branch("cluCrystalList", &cluCrystalList_);
 
 
-       crystalEnergy_        = tfs->make<TH1F>("cryHitEnergy",         "Sum of ADC values in each digi waveform", 100,   0., 25000. );
+       crystalADCSum_        = tfs->make<TH1F>("cryADCSum",            "Sum of ADC values in digi waveform",      100,   0., 25000. );
        crystalTime_          = tfs->make<TH1F>("cryHitTime",           "Time of crystal hit",                     100,   0.,  2000. );
        clusterEnergyHigh_    = tfs->make<TH1F>("clusterEnergyHigh",    "Cluster energy radius > 400",             150,   0.,   150. );
        clusterMaxCrystalHit_ = tfs->make<TH1F>("clusterMaxCrystalHit", "Energy most energetic hit in cluster",    100,   0.,    50. );
@@ -192,7 +192,7 @@ namespace mu2e {
 	     int et = 0;
 	     for(auto e: digi.waveform()) et += e;
 
-	     crystalEnergy_->Fill(et);
+	     crystalADCSum_->Fill(et);
 	     crystalTime_->Fill(digi.t0());
            }
 
