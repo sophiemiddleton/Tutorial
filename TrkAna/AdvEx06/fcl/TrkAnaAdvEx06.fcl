@@ -1,9 +1,3 @@
 #include "Offline/TrkDiag/fcl/TrkAnaReco.fcl"
 
-physics.analyzers.CalAna : { module_type : "CaloClusterAnalysis"
-			     CaloClusterTag : "CaloClusterFromProtoCluster"
-}
-
-physics.TrkAnaEndPath : [ @sequence::physics.TrkAnaEndPath, CalAna ]
-
 services.TFileService.fileName : "trkana-adv-ex06.root"
