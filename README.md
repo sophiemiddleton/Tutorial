@@ -1,5 +1,5 @@
 # Tutorial
-Code to use in tutorials for new users
+Code to use in tutorials for new users.
 
-Currently is an archive and not much is working.
-
+This code is currently being updated.  Most of it compiles and runs now.  Documentation
+is being prepared.
