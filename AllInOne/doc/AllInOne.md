@@ -25,4 +25,4 @@ There are other kinds of modules that may add information to the event.
 ## Instructions
 
 1. To [build and run interactively](Interactive.md)
-1. Grid
+1. [Running on the Grid](Grid.md)
