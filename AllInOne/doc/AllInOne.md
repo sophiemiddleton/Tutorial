@@ -22,6 +22,8 @@ Offline supports several types of plugins and this one is called a "module".  Mo
 is an "analyzer module".  In art-speak analyzer modules are allow to view all of the information in the event.
 There are other kinds of modules that may add information to the event.
 
+The instructions below are complete but the narrative that goes with them still needs a lot of work.
+
 ## Instructions
 
 1. To [build and run interactively](Interactive.md)
