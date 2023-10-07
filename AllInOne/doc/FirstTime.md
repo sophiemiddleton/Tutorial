@@ -25,7 +25,13 @@ Here are some comments on steps that may need some explanation.
 1. Steps 1 through 4 are just making your working space.  You may choose aname different from Tutorial if you wish but you should work in your space on the /srv disks.
 1. You should not put output files on the app disks. So steps 5 and 6 make space for output files on the data disk. For convenience it puts the symbolic link named out in the local directory.
 1. Step 8: You will be told if you should work with the head of the repository of checkout a specific branch
-1. Step 9. [Muse](https://mu2ewiki.fnal.gov/wiki/Muse) is the Mu2e Software environment.  This command configures the enviroment to build against a collection of other Mu2e software
+1. Step 9. [Muse](https://mu2ewiki.fnal.gov/wiki/Muse) is the Mu2e Software environment.  When you need to choose a version different than v01_00_00 we will edit this file to let you know. So type the command as is.
 
-You don't need to take time now to invesitate what muse backing did
+### Muse ###
 
+The code that you build in the tutorial creates a plugin that will be loaded by the main Mu2e Software, called Offline.
+Some parts of the Tutorial will also need information from 3 other Mu2e repositories, Production, TrkAna and REve.  You will learn about this at the appropriate time.
+The ```muse backing``` command configures your environment so that Muse knows where to find the include files, libraries and run-time auxillary files from
+all of the 4 repositories.
+If you recursive follow all of the backing symbolic links, you will discover the all of the include files, libraries and auxillary files.
+The details of how it all works is beyond the scope of this part of the tutorial.
