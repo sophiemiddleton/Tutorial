@@ -29,8 +29,12 @@ Here are some comments on steps that may need some explanation.
 
 ### Muse ###
 
-The code that you build in the tutorial creates a plugin that will be loaded by the main Mu2e Software, called Offline.
-Some parts of the Tutorial will also need information from 3 other Mu2e repositories, Production, TrkAna and REve.  You will learn about this at the appropriate time.
+The code that you build in the tutorial creates a plugin that will be loaded by the main Mu2e Software, called [Offline](https://github.com/Mu2e/Offline).
+Some parts of the Tutorial will also need information from 3 other Mu2e repositories,
+[Production](https://github.com/Mu2e/Production),
+[TrkAna](https://github.com/Mu2e/TrkAna),
+and [REve](https://github.com/Mu2e/REve).
+You will learn about these at the appropriate time.
 The ```muse backing``` command configures your environment so that Muse knows where to find the include files, libraries and run-time auxillary files from
 all of the 4 repositories.
 If you recursive follow all of the backing symbolic links, you will discover the all of the include files, libraries and auxillary files.
