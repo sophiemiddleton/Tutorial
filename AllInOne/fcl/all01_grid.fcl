@@ -1,3 +1,3 @@
-#incldude "Tutorial/AllInOne/fcl/all01.fcl"
+#include "Tutorial/AllInOne/fcl/all01.fcl"
 
-services.TFileService.fileName : "all01.root"
+services.TFileService.fileName : "nts.USER.CeEndpointMix1BBSignal.MDC2020v_perfect_v1_0.SEQUENCE.root"
