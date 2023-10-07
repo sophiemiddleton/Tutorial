@@ -75,8 +75,27 @@ built to run on scientific linux version 7.  The field "prof" says that the code
 to profile the code, but not enough to perform detailed debugging.  The other value of this field is "debug" which says that the code was built with
 low optimation and the maximum information retained to support debugging.  The field e28 says what compiler version and compiler optons were used.
 The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers). The field p049 is the
-name of a file found in  https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers .  This file describes the full environment
-used to build the code.
+name of a file found in
+
+```
+build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so.
+```
+
+### Step 6
+
+This says to run the mu2e main program, which is found as part of Offline.  To see its exact locaton use the command ```type mu2e```.
+The -c argument specifies the name of a file that contains the run time configuration for this job.  The -S optoin specifies
+the name of a text file that contains the name of input files, one file per line.  And the -n option specifies the maximum number
+of events to process.
+
+The run time configuration file is written in an language called the Fermilab Hierarchical Configuration Language ( FHiCL, pronounced "fickle").
+By convention, Files written in this languge end in .fcl.
+Mu2e maintains two important pieces of FHiCL documentation
+
+1. [A description of FHiCL as a language]( https://mu2ewiki.fnal.gov/wiki/FclIntro#HELP.21_What_command_line_options_can_I_give_to_the_mu2e_program.3F).
+1. [A description of how *art* uses FHiCL](https://mu2ewiki.fnal.gov/wiki/FclPaths).
+
+services.TFileService.fileName : "out/all01.root"
 
 
 
