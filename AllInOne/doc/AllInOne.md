@@ -41,12 +41,13 @@ if you log out and log in again, you need to redo steps 2 and 3.  Then you can p
 
 ## What did you just do?
 
-### Step 2###
+### Step 2
 
-This told the UPS system where to find all of the repository of UPS products that are needed to build and run Mu2e Offline.
+This told the UPS system where to find repository of UPS products that are needed to build and run Mu2e Offline.
 For more information see the [Mu2e login tutorial](https://mu2ewiki.fnal.gov/wiki/LoginTutorial#Check_setup_mu2e).
 
-### Step 4###
+
+### Step 4
 In this step, Muse descends recurively through the backing releases until it finds the file Offlne/.muse.
 In that file it finds the line "ENVSET pnnn", where nnn is a 3 digit number.  Muse then does
 ```
@@ -59,8 +60,27 @@ echo $MUSE_ENVSET
 This file is a shell script that sets up all of the UPS products needed to build and run the selected vesion of Offline.
 
 
-### Step 5###
-In this step muse delegates building the code to a too 
+### Step 5
+In this step muse delegates building the code to [scons](https://mu2ewiki.fnal.gov/wiki/Scons), which is one of several build systems used by the software community.
+Mu2e has configured scons so that it will descend through the directory Tutorial and find every file named SConscript.  Those files contain the rules to compile
+and link all of the source files in their area.  Scons then does the build according to those rules.
+In this case it found one file to build, Tutorial/AllInOne/src/All01_module.cc .  Because the filename contains the string _module, scons built this file
+following the rules to make an art module plugin.
+
+To see the output of the build ```ls build```; this direcotry contains a subdirectory with a name like sl7-prof-e28-p049 .  The slf says that the code wsa
+built to run on scientific linux version 7.  The field "prof" says that the code was built with full optimzation and that enough symbols were retained
+to profile the code, but not enough to perform detailed debugging.  The other value of this field is "debug" which says that the code was built with
+low optimation and the maximum information retained to support debugging.  The field e28 says what compiler version and compiler optons were used.
+The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers).
+
+
+
+
+
+
+
+###
+
 
 
 
