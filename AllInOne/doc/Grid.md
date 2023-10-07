@@ -37,7 +37,7 @@ Now, submit the job
 mu2eprodsys --code=path_to_the_output_of_muse_tarball \
             --fcllist=/pnfs/mu2e/scratch/users/$USER/fcl/AllInOne.tar.bz2  \
             --memory=1500MB \
-            --expected-lifetime=10m \
+            --expected-lifetime=1h \
             --xrootd \
             --dsconf=MDC2020v_perfect_v1_0
 ```
