@@ -90,7 +90,7 @@ Using the above documentation you will learn that this job says
 ### Step 7
 
 1. The purpose of this exercise is to illustrate the difference between a module label, which is the name of a module instance, and the module type, which is the name of a shared library
-1. The code makes two int
+1. The code makes two instances of the same module but configures them differently: it changes a time cut and the name verbosity of some printout.
 
 
 # Other exercises
