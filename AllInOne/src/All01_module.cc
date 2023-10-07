@@ -108,6 +108,9 @@ namespace mu2e {
       }
 
       // Only consider tracks that have all 3 sets of intersection information.
+      // The three locations are at the intersections of the trajectory with planes
+      // perpendicular to the z axis and at the front, middle and back of the tracker.
+      // Just because.  It's not a recommendation for analysis.
       std::vector<KalIntersection>::const_iterator front = ks.intersection( SurfaceIdEnum::TT_Front );
       auto mid  = ks.intersection( SurfaceIdEnum::TT_Mid );
       auto back = ks.intersection( SurfaceIdEnum::TT_Back );
