@@ -41,8 +41,8 @@ This file is a shell script that sets up all of the UPS products needed to build
 
 
 ### Step 5
-In this step muse delegates building the code to [scons](https://mu2ewiki.fnal.gov/wiki/Scons), which is one of several build systems used by the software community.
-Mu2e has configured scons so that it will descend through the directory Tutorial and find every file named SConscript.  Those files contain the rules to compile
+In this step muse delegates building the code to [scons](https://mu2ewiki.fnal.gov/wiki/Scons), which is the build systems chosen by Mu2e.
+We have configured scons so that it will descend through the directory Tutorial and find every file named SConscript.  Those files contain the rules to compile
 and link all of the source files in their area.  Scons then does the build according to those rules.
 In this case it found one file to build, Tutorial/AllInOne/src/All01_module.cc .  Because the filename contains the string _module, scons built this file
 following the rules to make an art module plugin.
@@ -50,16 +50,18 @@ following the rules to make an art module plugin.
 The library file is found in:
 build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so
 
-To see the output of the build ```ls build```; this direcotry contains a subdirectory with a name like sl7-prof-e28-p049 .  The slf says that the code wsa
+The build produces the file:
+```
+build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so.
+```
+
+The directory name sl7-prof-e28-p049 is parsed as follows.  The slf says that the code was
 built to run on scientific linux version 7.  The field "prof" says that the code was built with full optimzation and that enough symbols were retained
 to profile the code, but not enough to perform detailed debugging.  The other value of this field is "debug" which says that the code was built with
 low optimation and the maximum information retained to support debugging.  The field e28 says what compiler version and compiler optons were used.
 The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers). The field p049 is the
-name of a file found in
+name of the envset chosen when you did ```muse setup```.
 
-```
-build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so.
-```
 
 ### Step 6
 
@@ -73,12 +75,29 @@ By convention, Files written in this languge end in .fcl.
 Mu2e maintains two important pieces of FHiCL documentation
 
 1. [A description of FHiCL as a language]( https://mu2ewiki.fnal.gov/wiki/FclIntro#HELP.21_What_command_line_options_can_I_give_to_the_mu2e_program.3F).
+1. An important subsection of the above is: [Overall Structure of an art runtime configuration](https://mu2ewiki.fnal.gov/wiki/FclIntro#Overall_Structure_of_an_art_Run-time_Configuration)
 1. [A description of how *art* uses FHiCL](https://mu2ewiki.fnal.gov/wiki/FclPaths).
 
-services.TFileService.fileName : "out/all01.root"
+Using the above documentation you will learn that this job says
+
+1. It gives the job a name.  In this case is a string that is not used anywhere.
+1. It tells the scheduler how verbose to be with informational messages
+1. It defines one module instance: it says to run the module All01 that you just built and provides values for its run time parameters
+1. It tells art to run just this one module
+1. It tells are to put the root output file in  "out/all01.root" .
 
 
+### Step 7
 
+1. The purpose of this exercise is to illustrate the difference between a module label, which is the name of a module instance, and the module type, which is the name of a shared library
+1. The code makes two int
+
+
+# Other exercises
+
+1. ```mu2e --print-description All01``` this will show the run-time help for the module you just built.  Among other things it tells you where to find the source and library files.
+1. ```mu2e --help``` describes all of the options that art allows.  You can explore them.
+1. [Some more suggestions of what to explore](https://mu2ewiki.fnal.gov/wiki/FclIntro#Utilities)
 
 # Notes to fix this up.
 
