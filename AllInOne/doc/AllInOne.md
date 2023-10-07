@@ -12,6 +12,8 @@ In the following, code you should type at the command prompt is in a ```monospac
 1. ```setup mu2e```
 1. If you are just staring there are some [extra steps the first time:](FirstTime.md)
 1. ```muse setup```
+1. ```muse build -j 2```
+
 
 
 
