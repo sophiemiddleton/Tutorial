@@ -1,0 +1,3 @@
+#incldude "Tutorial/AllInOne/fcl/all01.fcl"
+
+services.TFileService.fileName : "all01.root"
