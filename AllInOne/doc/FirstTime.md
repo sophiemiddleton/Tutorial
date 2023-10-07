@@ -12,11 +12,11 @@
 1. ```muse backing TutorialBacking v01_00_00```
 1. ```ls -l``` .  The output should look like:
 
-
->lrwxrwxrwx 1 kutschke mu2e 65 Oct  6 22:23 backing -> /cvmfs/mu2e.opensciencegrid.org/Musings/TutorialBacking/v01_00_00
+```
+lrwxrwxrwx 1 kutschke mu2e 65 Oct  6 22:23 backing -> /cvmfs/mu2e.opensciencegrid.org/Musings/TutorialBacking/v01_00_00
 lrwxrwxrwx 1 kutschke mu2e 38 Oct  6 22:22 out -> /srv/mu2e/data/users/kutschke/Tutorial
 drwxr-xr-x 1 kutschke mu2e 12 Oct  6 22:22 Tutorial
-
+```
 
 ## Explanation
 
