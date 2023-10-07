@@ -67,28 +67,16 @@ and link all of the source files in their area.  Scons then does the build accor
 In this case it found one file to build, Tutorial/AllInOne/src/All01_module.cc .  Because the filename contains the string _module, scons built this file
 following the rules to make an art module plugin.
 
+The library file is found in:
+build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so
+
 To see the output of the build ```ls build```; this direcotry contains a subdirectory with a name like sl7-prof-e28-p049 .  The slf says that the code wsa
 built to run on scientific linux version 7.  The field "prof" says that the code was built with full optimzation and that enough symbols were retained
 to profile the code, but not enough to perform detailed debugging.  The other value of this field is "debug" which says that the code was built with
 low optimation and the maximum information retained to support debugging.  The field e28 says what compiler version and compiler optons were used.
-The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers).
-
-
-
-
-
-
-
-###
-
-
-
-
-
-
-
-
-
+The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers). The field p049 is the
+name of a file found in  https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers .  This file describes the full environment
+used to build the code.
 
 
 
