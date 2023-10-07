@@ -1,0 +1,36 @@
+#
+# Run the All01 example
+#
+
+#include "Offline/fcl/minimalMessageService.fcl"
+
+process_name : All01
+
+source : {
+  module_type : RootInput
+}
+
+services : {
+  message : @local::default_message
+}
+
+physics :{
+
+  analyzers : {
+    a1 : {
+      module_type : All01
+      kalSeedsTag : KKDeM
+      tmin        : 0.     # (ns) no fiducial time cut
+      maxPrint    : 10
+    }
+  }
+
+  p1 : []
+  e1 : [a1]
+
+  trigger_paths  : []
+  end_paths      : [e1]
+
+}
+
+services.TFileService.fileName : "out/all01.root"

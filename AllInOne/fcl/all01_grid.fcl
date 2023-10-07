@@ -1,0 +1,3 @@
+#include "Tutorial/AllInOne/fcl/all01.fcl"
+
+services.TFileService.fileName : "nts.USER.CeEndpointMix1BBSignal.MDC2020v_perfect_v1_0.SEQUENCE.root"
