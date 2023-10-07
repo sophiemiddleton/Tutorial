@@ -9,7 +9,7 @@
 1. ```ln -s  /srv/mu2e/data/users/$USER/Tutorial out```
 1. ```git clone https://github.com/Mu2e/Tutorial```
 1. Optional: checkout a tag.
-1.1 ```git checkout -b vx_y_z_branch vx_y_z```
+ * ```git checkout -b vx_y_z_branch vx_y_z```
 1. ```muse backing TutorialBacking v01_00_00```
 
 ## Explanation
