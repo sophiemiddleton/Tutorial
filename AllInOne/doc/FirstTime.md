@@ -44,6 +44,6 @@ This means that your code will call functions and read data structures that are 
 Some parts of the Tutorial will need code and scripts found in three other Mu2e repositries, [Production](https://github.com/Mu2e/Production),
 [TrkAna](https://github.com/Mu2e/TrkAna), and [REve](https://github.com/Mu2e/REve). You will learn about those repositories at the appropriate time.
 
-The ```muse backing``` command tells muse where to find prebuilt versions of Offline and the other 3 repositories.  The work that you do will look for
-include files, libraries and run-time auxillary files.  It will find these files in the backing release.
+The ```muse backing``` command tells muse where to find header files, shared libraries and auxillary files from Offline and the other 3 repositories.
+The connection is made via the symbolic link "backing" that points to prebuilt versions of all 4 repositories.
 The details of how it all works is beyond the scope of this part of the tutorial.
