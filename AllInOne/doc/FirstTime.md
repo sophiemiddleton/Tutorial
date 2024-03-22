@@ -1,7 +1,7 @@
 # Steps to take your first time
 
 This page describes the steps to take the first time that you start a new Tutorial working directory.
-These instructions will guide you to [create make your working space on the app and data disks:](https://mu2ewiki.fnal.gov/wiki/LoginTutorial#Mu2e_Disks).
+These instructions will guide you to [create your working space on the mu2e app and data disks:](https://mu2ewiki.fnal.gov/wiki/LoginTutorial#Mu2e_Disks).
 
 These instructions begin with a punch list of steps to take, which are followed by a description of what those steps do.
 
