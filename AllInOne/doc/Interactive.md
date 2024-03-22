@@ -7,7 +7,7 @@ In the following, code you should type at the command prompt is in a ```monospac
 
 1. Log into one of the [mu2e interactive nodes:](https://mu2ewiki.fnal.gov/wiki/ComputingTutorials#Interactive_logins)
 1. ```setup mu2e```
-1. In your first time in this working area your need to take some extra steps to [configure your working environment:](FirstTime.md)
+1. <font color=red>If this is your first time in this working area you need to take some extra steps</font> to [configure your working environment:](FirstTime.md)
 1. All other times, ```cd /exp/mu2e/app/users/$USER/Tutorial```
 1. ```muse setup```
 1. ```muse build -j 2```

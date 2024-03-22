@@ -4,7 +4,7 @@
 
 This is an example that will build code, run it and prepare to run it on the grid. It also explains what each step does.
 The code here is not intended to be a recommendation for any particular set of selection criteria.
-The purpose of the exmaple is to teach the mechanics of how it all works.
+The purpose of the example is to teach the mechanics of how it all works.
 
 The example will also submit a grid job to run the same code.
 
@@ -20,7 +20,8 @@ and execute.  Because you are just building one plugin, not all of Offline, the 
 
 Offline supports several types of plugins and this one is called a "module".  More specifically it
 is an "analyzer module".  In art-speak analyzer modules are allow to view all of the information in the event.
-There are other kinds of modules that may add information to the event.
+There are other kinds of modules that may add information to the event.  No module is allowed to modify information
+that is already in the event.
 
 The instructions below are complete but the narrative that goes with them still needs a lot of work.
 
