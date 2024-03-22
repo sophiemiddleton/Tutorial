@@ -2,21 +2,23 @@
 
 ## Instructions
 
-In the following, code you should type at the command prompt is in a ```monospaced font on a grey background```.
+These instructions start with a punch list of steps to follow.  This is followed by a discussion of what you just did.
+This pattern will be followed throughout these tutorials.
 
+In the following, code you should type at the command prompt is in a ```monospaced font on a grey background```.
 
 1. Log into one of the [mu2e interactive nodes:](https://mu2ewiki.fnal.gov/wiki/ComputingTutorials#Interactive_logins)
 1. ```setup mu2e```
-1. <font color=red>If this is your first time in this working area you need to take some extra steps</font> to [configure your working environment:](FirstTime.md)
-1. All other times, ```cd /exp/mu2e/app/users/$USER/Tutorial```
+1. If this is your first time in this working area you need to take some extra steps to [configure your working environment:](FirstTime.md)
+1. On subsequent times, ```cd /exp/mu2e/app/users/$USER/TutorialWork```
 1. ```muse setup```
 1. ```muse build -j 2```
 1. ```mu2e -c Tutorial/AllInOne/fcl/all01.fcl -S  Tutorial/AllInOne/filelist.txt  -n 10000```
 1. This will produce the file out/all01.root . Browse this file and you will find a TDirectory that has several histograms of properties of tracks.
 1. ```mu2e -c Tutorial/AllInOne/fcl/all01a.fcl -S  Tutorial/AllInOne/filelist.txt  -n 10000``` note the extra a in the name of the .fcl file
-1. This will produce the file out/all01a.root.  Browse this file and you will see that it contains two TDirectories with very similar histograms.  The difference is that these histograms have a fiducial time cut while the others do not.
+1. This will produce the file out/all01a.root.  Browse this file and you will see that it contains two TDirectories with very similar histograms.  The difference is that these histograms has a fiducial time cut while the others do not.
 
-If you edit source files in working clone of Tutorial you need to rebuild the code, step 5 and then you can rerun it, steps 6 and 8.
+If you edit source files in your working clone of Tutorial you need to rebuild the code, step 5 and then you can rerun it, steps 6 and 8.
 
 if you log out and log in again, you need to redo steps 2 and 3.  Then you can pickup where you left off.
 
@@ -27,44 +29,37 @@ if you log out and log in again, you need to redo steps 2 and 3.  Then you can p
 This told the UPS system where to find repository of UPS products that are needed to build and run Mu2e Offline.
 For more information see the [Mu2e login tutorial](https://mu2ewiki.fnal.gov/wiki/LoginTutorial#Check_setup_mu2e).
 
+### Steps 3 and 4
 
-### Step 4
-In this step, Muse descends recurively through the backing releases until it finds the file Offlne/.muse.
-In that file it finds the line "ENVSET pnnn", where nnn is a 3 digit number.  Muse then does
-```
-source  /cvmfs/mu2e.opensciencegrid.org/DataFiles/Muse/pnnn
-```
-You can see which file was chosen:
-```
-echo $MUSE_ENVSET
-```
-This file is a shell script that sets up all of the UPS products needed to build and run the selected vesion of Offline.
-
+You need to do just one of these.  Everytime you start a new working directory, you need to follow step 3.
+Be sure the follow the link in step 3.
+If you log out and log back in again, then you need to follow step 4, not step 3.
 
 ### Step 5
+In this step, Muse creates your working environment, which means that it defines many environment variables
+that are used when you build or run your code.  The details of what it does and how it knows what to do is
+outside the scope of this tutorial.
+
+
+### Step 6
 In this step muse delegates building the code to [scons](https://mu2ewiki.fnal.gov/wiki/Scons), which is the build systems chosen by Mu2e.
 We have configured scons so that it will descend through the directory Tutorial and find every file named SConscript.  Those files contain the rules to compile
 and link all of the source files in their area.  Scons then does the build according to those rules.
 In this case it found one file to build, Tutorial/AllInOne/src/All01_module.cc .  Because the filename contains the string _module, scons built this file
-following the rules to make an art module plugin.
-
-The library file is found in:
-build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so
-
-The build produces the file:
+following the rules to make an art module plugin, which is a shared library found at:
 ```
 build/sl7-prof-e28-p049/Tutorial/lib/libtutorial_AllInOne_All01_module.so.
 ```
 
-The directory name sl7-prof-e28-p049 is parsed as follows.  The slf says that the code was
-built to run on scientific linux version 7.  The field "prof" says that the code was built with full optimzation and that enough symbols were retained
-to profile the code, but not enough to perform detailed debugging.  The other value of this field is "debug" which says that the code was built with
+The directory name sl7-prof-e28-p055 is parsed as follows.  The sl7 says that the code was
+built to run on scientific linux version 7.  The field "prof" says that the code was built with full optimzation and that enough linker symbols were retained
+to profile the code, but not enough to perform detailed debugging.  The other allowed value of this field is "debug" which says that the code was built with
 low optimation and the maximum information retained to support debugging.  The field e28 says what compiler version and compiler optons were used.
-The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers). The field p049 is the
-name of the envset chosen when you did ```muse setup```.
+The secret decoder ring is found on [here](https://cdcvs.fnal.gov/redmine/projects/cet-is-public/wiki/AboutQualifiers). The field p055 is a key to lookup
+all of the details about what versions of what libraries are currently in use.  It was chosen when you gave the command ```muse setup```.
 
 
-### Step 6
+### Step 7
 
 This says to run the mu2e main program, which is found as part of Offline.  To see its exact locaton use the command ```type mu2e```.
 The -c argument specifies the name of a file that contains the run time configuration for this job.  The -S optoin specifies
@@ -73,25 +68,25 @@ of events to process.
 
 The run time configuration file is written in an language called the Fermilab Hierarchical Configuration Language ( FHiCL, pronounced "fickle").
 By convention, Files written in this languge end in .fcl.
-Mu2e maintains two important pieces of FHiCL documentation
+Mu2e maintains three important pieces of FHiCL documentation
 
 1. [A description of FHiCL as a language]( https://mu2ewiki.fnal.gov/wiki/FclIntro#HELP.21_What_command_line_options_can_I_give_to_the_mu2e_program.3F).
 1. An important subsection of the above is: [Overall Structure of an art runtime configuration](https://mu2ewiki.fnal.gov/wiki/FclIntro#Overall_Structure_of_an_art_Run-time_Configuration)
 1. [A description of how *art* uses FHiCL](https://mu2ewiki.fnal.gov/wiki/FclPaths).
 
-Using the above documentation you will learn that this job says
+Using the above documentation you will learn that all01.fcl says
 
 1. It gives the job a name.  In this case is a string that is not used anywhere.
 1. It tells the scheduler how verbose to be with informational messages
 1. It defines one module instance: it says to run the module All01 that you just built and provides values for its run time parameters
 1. It tells art to run just this one module
-1. It tells are to put the root output file in  "out/all01.root" .
+1. It tells art to put the root output file in  "out/all01.root" .
 
 
-### Step 7
+### Step 9
 
-1. The purpose of this exercise is to illustrate the difference between a module label, which is the name of a module instance, and the module type, which is the name of a shared library
-1. The code makes two instances of the same module but configures them differently: it changes a time cut and the name verbosity of some printout.
+1. The purpose of this exercise is to illustrate the difference between a module label, which is the name of a module instance, and the module type, which is the name of a shared library.
+1. all01a.fcl tells art to makes two instances of the same module but to configure them differently: it changes a time cut and the verbosity of some printout.
 
 
 # Other exercises
