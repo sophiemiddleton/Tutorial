@@ -31,7 +31,7 @@ The version number of TutorialBacking might be different but that's OK.
 This is what those steps did.
 
 1. Steps 1 through 3 are just making your working space.
-1. The directory name "TutorialWork" is just an example.
+1. The directory name "TutorialWork" is just an example. We will refer to this directory as your Muse working directory.
 1. You should not put output files on the app disks. So steps 4 and 5 make space for output files on the data disk. For convenience it puts the symbolic link named "out" in the local directory.
 1. Step 6 makes a local copy of the Tutorial code.
 1. Step 7: Normally you can skip this step.  From time to time you will be told to use a particular tag of the Tutorial code.  Normally you should use the head of the repository, which is the default.
