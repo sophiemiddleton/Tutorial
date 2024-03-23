@@ -9,10 +9,14 @@ The purpose of the example is to teach the mechanics of how it all works.
 The example will also submit a grid job to run the same code.
 
 This example runs on a set of simulated events in which there is always one conversion electron and it has pileup
-overlayed in the amount expected during 1BB running.  This is not at all what our real data will look like but
-it is useful as a tool for teaching how the software works.   In these events, the CRV information contains only pileup.
+overlayed in the amount expected during 1BB running. Our real data will contain a lot of pile up but few, if any,
+conversion electron cadidates.
+In this sense the example is not realistic but it is it is useful as a tool for teaching how the software works.
+In these events, the CRV information contains only pileup.
 The simulated events have been processed through the trigger and reconstruction.
-The code in the example looks at the ouptut of the track fit.  Most reconstructed tracks will be the generated
+The code in the example looks at the ouptut of the track fit and some properties of the calorimeter
+and CRV information.
+Most reconstructed tracks will be the generated
 conversion electron but some of them will originate in the pileup.
 
 The main Mu2e offline software lives in a repository simply named [Offline](https://github.com/Mu2e/Offline).
