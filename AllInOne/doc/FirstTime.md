@@ -56,6 +56,7 @@ If you want to skip ahead you can read the wiki page about [Muse](https://mu2ewi
 This section discusses the code that you cloned at step 6. Do the following:
 
 ```ls Tutorial/AllInOne```
+
 doc  fcl filelist.txt src
 
 The doc directory contains the documentation that you are reading now.
@@ -63,6 +64,7 @@ The file filelist.txt contains the full paths to input files that are matched to
 Now look at the src (for source) directory:
 
 ```ls Tutorial/AllInOne/src/```
+
 All01_module.cc  NominalTrackerGeom_module.cc SConscript  StrawDigiStudy_module.cc
 
 The three files ending in _module.cc are the source code that contains the exmaples.
@@ -72,7 +74,9 @@ contains the instructions to the build system about what files to build and
 it also contains the list of libraries needed to link the shared library.
 
 Next do:
+
 ```ls Tutorial/AllInOne/fcl```
+
 all01.fcl all01_grid.fcl all01a.fcl nominalTrackerGeom.fcl strawDigisStudy.fcl
 
 These files are in a language called the Fermilab Hierarchical Configuration Language
