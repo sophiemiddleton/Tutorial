@@ -29,15 +29,15 @@ There are other kinds of modules that may add information to the event.  No modu
 that is already in the event.
 
 In this example you will see 3 analyzer modules:
-#  Tutorial/AllInOne/src/All01_module.cc
-#  Tutorial/AllInOne/src/NominalTrackerGeom_module.cc
-#  Tutorial/AllInOne/src/StrawDigiStudy_module.cc
+1.  Tutorial/AllInOne/src/All01_module.cc
+1.  Tutorial/AllInOne/src/NominalTrackerGeom_module.cc
+1.  Tutorial/AllInOne/src/StrawDigiStudy_module.cc
 
 All01_module.cc finds all of the reconstructed tracks in the event.  For each track:
 
-# It makes histograms and nutples of some properties of the track
-# If the track has an associcated calorimeter cluster, one of those properties is "E over p".
-# It plots the time difference between the track and each of the CRV Coincidence Clusters.
+1. It makes histograms and nutples of some properties of the track
+1. If the track has an associcated calorimeter cluster, one of those properties is "E over p".
+1. It plots the time difference between the track and each of the CRV Coincidence Clusters.
 
 NominalTrackerGeom_module.cc loops over all of the straws in the tracker and prints information
 about each straw. This is an example of how to access that information in code.
