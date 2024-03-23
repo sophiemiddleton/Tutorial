@@ -34,8 +34,9 @@ This is what those steps did.
 1. The directory name "TutorialWork" is just an example. You can choose any name you want but we recommend that you not choose simply "Tutorial"; that might cause confusion with the directory named Tutorial that will be created in step 6. We will refer to this directory as your Muse working directory.
 1. You should not put output files on the app disks. So steps 4 and 5 make space for output files on the data disk. For convenience it puts the symbolic link named "out" in the local directory.
 1. Step 6 makes a local copy of the Tutorial code.
-1. Step 7: Normally you can skip this step.  From time to time you will be told to use a particular tag of the Tutorial code.  Normally you should use the head of the repository, which is the default.
+1. Step 7: Normally you can skip this step.  From time to time you will be told to use a particular tag of the Tutorial code.  Normally you should use the head of the repository, which is the default at step 6.
 1. Step 8. The command [muse](https://mu2ewiki.fnal.gov/wiki/Muse) runs a script that manages the Mu2e Software environment. It is described more below.
+1. Step 10.  Don't forget this step.  The next instructions expect that you have done it.
 
 ### Muse ###
 
@@ -47,3 +48,40 @@ Some parts of the Tutorial will need code and scripts found in three other Mu2e 
 The ```muse backing``` command tells muse where to find header files, shared libraries and auxillary files from Offline and the other 3 repositories.
 The connection is made via the symbolic link "backing" that points to prebuilt versions of all 4 repositories.
 The details of how it all works is beyond the scope of this part of the tutorial.
+If you want to skip ahead you can read the wiki page about [Muse](https://mu2ewiki.fnal.gov/wiki/Muse) .
+
+
+### The Code ###
+
+This section discusses the code that you cloned at step 6. Do the following:
+
+```ls Tutorial/AllInOne```
+
+doc  fcl filelist.txt src
+
+The doc directory contains the documentation that you are reading now.
+The file filelist.txt contains the full paths to input files that are matched to this tutorial.
+Now look at the src (for source) directory:
+
+```ls Tutorial/AllInOne/src/```
+
+All01_module.cc  NominalTrackerGeom_module.cc SConscript  StrawDigiStudy_module.cc
+
+The three files ending in _module.cc are the source code that contains the exmaples.
+When you continue with the instructions, you will build this code, meaning that
+you will compile it and link it into a shared library.  The file SConscript
+contains the instructions to the build system about what files to build and
+it also contains the list of libraries needed to link the shared library.
+Next do:
+
+```ls Tutorial/AllInOne/fcl```
+
+all01.fcl all01_grid.fcl all01a.fcl nominalTrackerGeom.fcl strawDigisStudy.fcl
+
+These files are in a language called the Fermilab Hierarchical Configuration Language
+(FHiCL, pronounced "fickle").
+By convention, Files written in this languge end in .fcl
+Each of these files contains the instructions for one run of the art main program.
+For example, all01.fcl, tells art to load shared library built from All01_module.cc
+and run it.  The job makes some root histograms and all01.fcl tells it where to
+put the output histogram file.
