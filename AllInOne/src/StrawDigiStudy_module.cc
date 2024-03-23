@@ -84,7 +84,7 @@ namespace mu2e {
 
     _hNStrawDigis = _tfs->make<TH1F>("hNStrawDigis", "Number of straw Digis per event.",    100,     0.,    1000.  );
     _hCheck       = _tfs->make<TH1F>("hCheck",       "Check that Strawdigis = waveforms.",    3,    -1.,       1.  );
-    _hsid         = _tfs->make<TH1F>("hsid",         "Straw ID of hit wire.",               220,     0.,   22000.  );
+    _hsid         = _tfs->make<TH1F>("hsid",         "Straw ID of hit wire.",               864,     0.,   38000.  );
     _hPMP         = _tfs->make<TH1F>("hPMP",         "Pulse Height from firmware.",         100,     0.,     500.  );
     _hNSamples    = _tfs->make<TH1F>("hNSamples",    "Number of samples in Waveform.",       20,     0.,      20.  );
 
