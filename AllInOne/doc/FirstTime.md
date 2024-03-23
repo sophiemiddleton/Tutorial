@@ -72,7 +72,6 @@ When you continue with the instructions, you will build this code, meaning that
 you will compile it and link it into a shared library.  The file SConscript
 contains the instructions to the build system about what files to build and
 it also contains the list of libraries needed to link the shared library.
-
 Next do:
 
 ```ls Tutorial/AllInOne/fcl```
@@ -84,4 +83,5 @@ These files are in a language called the Fermilab Hierarchical Configuration Lan
 By convention, Files written in this languge end in .fcl
 Each of these files contains the instructions for one run of the art main program.
 For example, all01.fcl, tells art to load shared library built from All01_module.cc
-and run it.
+and run it.  The job makes some root histograms and all01.fcl tells it where to
+put the output histogram file.
