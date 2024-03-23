@@ -29,9 +29,10 @@ There are other kinds of modules that may add information to the event.  No modu
 that is already in the event.
 
 In this example you will see 3 analyzer modules:
-1.  Tutorial/AllInOne/src/All01_module.cc
-1.  Tutorial/AllInOne/src/NominalTrackerGeom_module.cc
-1.  Tutorial/AllInOne/src/StrawDigiStudy_module.cc
+
+1. Tutorial/AllInOne/src/All01_module.cc
+1. Tutorial/AllInOne/src/NominalTrackerGeom_module.cc
+1. Tutorial/AllInOne/src/StrawDigiStudy_module.cc
 
 All01_module.cc finds all of the reconstructed tracks in the event.  For each track:
 
