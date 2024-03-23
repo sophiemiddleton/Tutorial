@@ -20,12 +20,14 @@ physics :{
     a1 : {
       module_type : All01
       kalSeedsTag : KKDeM
+      crvCCTag    : "SelectRecoMC:CrvCoincidenceClusterFinder"
       tmin        : 0.     # (ns) no fiducial time cut
       maxPrint    : 10
     }
     a2 : {
       module_type : All01
       kalSeedsTag : KKDeM
+      crvCCTag    : "SelectRecoMC:CrvCoincidenceClusterFinder"
       tmin        : 640.   # (ns) with a fiducial time cut
       maxPrint    : 0      # no printout
     }

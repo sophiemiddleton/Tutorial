@@ -6,6 +6,8 @@
 //  Original author Rob Kutschke
 //
 
+#include "Offline/RecoDataProducts/inc/CaloCluster.hh"
+#include "Offline/RecoDataProducts/inc/CrvCoincidenceCluster.hh"
 #include "Offline/RecoDataProducts/inc/KalSeed.hh"
 
 #include "art/Framework/Core/EDAnalyzer.h"
@@ -18,6 +20,8 @@
 #include "TNtuple.h"
 
 #include <iostream>
+#include <limits>
+
 using std::cout;
 using std::endl;
 
@@ -31,6 +35,7 @@ namespace mu2e {
       using Comment=fhicl::Comment;
 
       fhicl::Atom<art::InputTag> kalSeedsTag{Name("kalSeedsTag"), Comment("Input tag for a KalSeedCollection.")};
+      fhicl::Atom<art::InputTag>    crvCCTag{Name("crvCCTag"),    Comment("Input tag for a CrvCoincidenceClusterCollection.")};
       fhicl::Atom<int>              maxPrint{Name("maxPrint"),    Comment("Maximum number of events to print.")};
       fhicl::Atom<double>               tmin{Name("tmin"),        Comment("Fiducial time cut.")};
     };
@@ -47,9 +52,10 @@ namespace mu2e {
     Config _conf;
 
     // Values from the configuration
-    art::ProductToken<KalSeedCollection>   _kalSeedsToken;
-    double                                 _tmin;
-    int                                    _maxPrint;
+    art::ProductToken<KalSeedCollection>                 _kalSeedsToken;
+    art::ProductToken<CrvCoincidenceClusterCollection>   _crvCCToken;
+    double                                               _tmin;
+    int                                                  _maxPrint;
 
     // Counter to limit printout.
     int _nEvents = 0;
@@ -62,6 +68,9 @@ namespace mu2e {
     TH1F* _hp          = nullptr;
     TH1F* _hpErr       = nullptr;
     TH1F* _hnSkip      = nullptr;
+    TH1F* _heOverP     = nullptr;
+    TH1F* _hnCrvCC     = nullptr;
+    TH1F* _hdTCrv      = nullptr;
     TNtuple* _ntup     = nullptr;
 
   };
@@ -70,19 +79,23 @@ namespace mu2e {
     : art::EDAnalyzer(conf),
       _conf(conf()),
       _kalSeedsToken{consumes<KalSeedCollection>(conf().kalSeedsTag())},
+    _crvCCToken{consumes<CrvCoincidenceClusterCollection>(conf().crvCCTag())},
     _tmin(conf().tmin()),
     _maxPrint(conf().maxPrint()){
-}
+    }
 
   void All01::beginJob(){
     art::ServiceHandle<art::TFileService> tfs;
-    _hNTracks    = tfs->make<TH1F>("hNTracks", "Number of tracks per event.",                               10,  0.,    10. );
-    _hnDOF       = tfs->make<TH1F>("hnDOF",    "Number of degrees of freedom in fit.",                     100,  0.,   100. );
-    _hHasCalo    = tfs->make<TH1F>("hHasCalo", "Number of calorimeter hits.",                                2,  0.,     2. );
-    _ht0         = tfs->make<TH1F>("ht0",      "Track time at mid-point of Tracker ;(ns)",                 100,  0.,  2000. );
-    _hp          = tfs->make<TH1F>("hp",       "Track momentum at mid-point of tracker;( MeV/c)",          100, 70.,   120. );
-    _hpErr       = tfs->make<TH1F>("hpErr",    "Error on track momentum at mid-point of tracker;( MeV/c)", 100,  0.,     2. );
-    _hnSkip      = tfs->make<TH1F>("hnSkip",   "Cut tree for skipped tracks;( MeV/c)",                       3,  0.,     3. );
+    _hNTracks    = tfs->make<TH1F>("hNTracks", "Number of tracks per event.",                               10,     0.,    10.  );
+    _hnDOF       = tfs->make<TH1F>("hnDOF",    "Number of degrees of freedom in fit.",                     100,     0.,   100.  );
+    _hHasCalo    = tfs->make<TH1F>("hHasCalo", "Number of calorimeter hits.",                                2,     0.,     2.  );
+    _ht0         = tfs->make<TH1F>("ht0",      "Track time at mid-point of Tracker ;(ns)",                 100,     0.,  2000.  );
+    _hp          = tfs->make<TH1F>("hp",       "Track momentum at mid-point of tracker;( MeV/c)",          100,    70.,   120.  );
+    _hpErr       = tfs->make<TH1F>("hpErr",    "Error on track momentum at mid-point of tracker;( MeV/c)", 100,     0.,     2.  );
+    _hnSkip      = tfs->make<TH1F>("hnSkip",   "Cut tree for skipped tracks;( MeV/c)",                       3,     0.,     3.  );
+    _heOverP     = tfs->make<TH1F>("heOverP",  "E/p for tracks with a matched Calo Cluster",               150,     0.,     1.5 );
+    _hnCrvCC     = tfs->make<TH1F>("hnCrvCC",  "Number of CRV Coincidence clusters",                        10,     0.,    10.  );
+    _hdTCrv      = tfs->make<TH1F>("hdTnCrv",  "delta(T) track-CRV Coincidence cluster;(ns)",              200, -2000.,  2000.  );
 
     // Time, Momentum, Error on Momentum at Front, Mid and Back planes of the tracker
     _ntup = tfs->make<TNtuple>( "ntup", "Intersection ntuple",
@@ -95,10 +108,13 @@ namespace mu2e {
     auto const& kalSeeds = event.getProduct(_kalSeedsToken);
     _hNTracks->Fill( kalSeeds.size() );
 
+    auto const& crvCCs = event.getProduct(_crvCCToken);
+    _hnCrvCC->Fill( crvCCs.size() );
+
     // Ntuple buffer;
     std::array<float,9> nt;
 
-    // Loop over tracks in the event
+    // Loop over fitted tracks in the event
     for ( auto const& ks : kalSeeds ) {
 
       // Require final fit to have converged.
@@ -123,6 +139,21 @@ namespace mu2e {
       if ( mid->time() < _tmin ){
         _hnSkip->Fill(2.);
         continue;
+      }
+
+      // Time relative to Crv Coincidence clusters.
+      if ( !crvCCs.empty() ){
+        for ( auto const& cc : crvCCs ){
+          float dt = front->time() - cc.GetStartTime();
+          _hdTCrv->Fill(dt);
+        }
+      }
+
+      // If the track has an associated cluster, plot E/p.
+      if ( ks.hasCaloCluster() ){
+        CaloCluster const& cluster= *ks.caloCluster();
+        float eOverP = cluster.energyDep()/back->mom();
+        _heOverP->Fill( eOverP);
       }
 
       // Global properties
