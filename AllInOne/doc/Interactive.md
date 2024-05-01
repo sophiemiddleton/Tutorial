@@ -8,7 +8,7 @@ This pattern will be followed throughout these tutorials.
 In the following, code you should type at the command prompt is in a ```monospaced font on a grey background```.
 
 1. Log into one of the [mu2e interactive nodes:](https://mu2ewiki.fnal.gov/wiki/ComputingTutorials#Interactive_logins)
-1. ```setup mu2e```
+1. ```mu2einit```
 1. If this is your first time in this working area you need to take some extra steps to [configure your working environment:](FirstTime.md)
 1. On subsequent times, ```cd /exp/mu2e/app/users/$USER/TutorialWork```
 1. ```muse setup```
