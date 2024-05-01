@@ -9,7 +9,7 @@ This is done by using #include to include the orignal file and then overriding t
 Look at the file to see this.
 We strongly recommend this style over the alternative of making a copy of the file and editing the copy; the prefered method automatically transmits changes in the first file to the second.
 
-1. Login and return to your working directory.  Do the ```setup mu2e``` and ```muse setup```
+1. Login and return to your working directory.  Do the ```mu2einit``` and ```muse setup```
 1. Use muse to Make a tar file of the content of your working directory.  It is smart enough to skip the out/ subdirectory. It also knows that the backing releases are in cvmfs and will be visible on the grid worker nodes at the same path.  So they will just work.
 1. ```muse tarball```
 1. This will print a name like /mu2e/data/users/kutschke/museTarball/tmp.fNQI4rlDbd/Code.tar.bz2.  Save the name.
