@@ -25,7 +25,7 @@ The tools that access databases may require authentication.  Generally, if you h
 To get the tools in your path:
 
     mu2einit
-    setup mdh
+    muse setup ops
 
 ## Files and Datasets
 
