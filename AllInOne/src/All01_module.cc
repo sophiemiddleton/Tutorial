@@ -127,9 +127,9 @@ namespace mu2e {
       // The three locations are at the intersections of the trajectory with planes
       // perpendicular to the z axis and at the front, middle and back of the tracker.
       // Just because.  It's not a recommendation for analysis.
-      std::vector<KalIntersection>::const_iterator front = ks.intersection( SurfaceIdEnum::TT_Front );
-      auto mid  = ks.intersection( SurfaceIdEnum::TT_Mid );
-      auto back = ks.intersection( SurfaceIdEnum::TT_Back );
+      auto front = ks.intersections( SurfaceIdEnum::TT_Front ).front();
+      auto mid  = ks.intersections( SurfaceIdEnum::TT_Mid ).front();
+      auto back = ks.intersections( SurfaceIdEnum::TT_Back ).front();
       if ( front == ks.intersections().end() || mid == ks.intersections().end() || back == ks.intersections().end() ){
         _hnSkip->Fill(1.);
         continue;
