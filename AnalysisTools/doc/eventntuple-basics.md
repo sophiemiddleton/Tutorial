@@ -26,8 +26,24 @@ ntuple = uproot.open(filename+":EventNtuple/ntuple")
 ...
 ```
 
-That's a lot of branches. But what do they all _mean_? To answer that, we can use the ```ntuplehelper```
+As you can see, there are a lot of branches. But what do they all _mean_? To answer that, we can use the ```ntuplehelper```
 
-## ```ntuplehelper```
+## Listing all branches with ```ntuplehelper```
 
-To get a 
+The [```ntuplehelper```](https://github.com/Mu2e/EventNtuple/blob/main/doc/ntuplehelper.md) is a command line tool that can be used to print descriptions of the EventNtuple branches and leaves.
+
+To list all the branches with an explanation:
+
+* on the command line:
+
+```
+ntuplehelper --list-all-branches
+```
+
+* in a python session:
+
+```
+>>> import ntuplehelper
+>>> nthelper = ntuplehelper.nthelper()
+>>> nthelper.list_all_branches()
+```
