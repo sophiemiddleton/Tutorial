@@ -51,6 +51,8 @@ ntuplehelper branch.*
 
 As you can see, you get a brief description of the branch, as well as a description of every leaf on that branch.
 
+(Note that you can also list all branches with ```ntuplehelper --list-all-branches``` or ```nthelper.list_all_branches()```. This complete list is also documented [here](https://github.com/Mu2e/EventNtuple/blob/main/doc/branches.md))
+
 ## Understanding the structure of the EventNtuple
 
 Each entry in the EventNtuple corresponds to a single Mu2e event.
