@@ -1,3 +1,0 @@
-#include "Offline/TrkDiag/fcl/TrkAnaReco.fcl"
-
-services.TFileService.fileName : "trkana-adv-ex06.root"
