@@ -4,6 +4,8 @@
 
 Now that we have a list of EventNtuple files, let's take a look at one directly to understand the structure of the EventNtuple.
 
+[More basic introduction stuff to go here e.g. branches and leaves]
+
 ## Accessing the EventNtuple
 
 The EventNtuple is a [ROOT TTree](https://root.cern.ch/doc/master/classTTree.html) and so can be accessed in either ROOT or python like any other TTree.
@@ -26,33 +28,28 @@ ntuple = uproot.open(filename+":EventNtuple/ntuple")
 ...
 ```
 
-As you can see, there are a lot of branches. But what do they all _mean_? To answer that, we can use the ```ntuplehelper```
+As you can see, there are a lot of branches. But what do they _mean_? Pick a branch that you want to understand more about and continue to the next section
 
 ## Getting help with ```ntuplehelper```
 
-### Listing all branches
+We will use the [```ntuplehelper```](https://github.com/Mu2e/EventNtuple/blob/main/doc/ntuplehelper.md) to find out more about your branch.
 
-The [```ntuplehelper```](https://github.com/Mu2e/EventNtuple/blob/main/doc/ntuplehelper.md) is a command line tool that can be used to print descriptions of the EventNtuple branches and leaves.
-
-To list all the branches with an explanation:
+The ```ntuplehelper``` is a command line tool that prints descriptions of branches and leaves. To understand more about the branch you selected, do the following replacing ```branch``` with the name of the branch you want to know more about.
 
 * on the command line:
 
 ```
-ntuplehelper --list-all-branches
+ntuplehelper branch.*
 ```
 
-* in a python session:
-
+* in python
 ```
 >>> import ntuplehelper
 >>> nthelper = ntuplehelper.nthelper()
->>> nthelper.list_all_branches()
+>>> nthelper.whatis("branch.*")
 ```
 
-### Listing leaves
-
-Pick a branch from above
+As you can see, you get a brief description of the branch, as well as a description of every leaf on that branch.
 
 ## Understanding the structure of the EventNtuple
 
@@ -75,4 +72,3 @@ For example the ```trkhits``` branch is a vector-of-vectors because a single tra
 ```
 [ [trk1_hit1, trk1_hit2, ..., trk1_hitM], [trk2_hit1, trk2_hit2, ..., trk2_hitN], ..., [trkN_hit1, trkN_hit2, ..., trkN_hitM] ]
 ```
-
