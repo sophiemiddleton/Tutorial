@@ -87,14 +87,14 @@ namespace mu2e {
   void All01::beginJob(){
     art::ServiceHandle<art::TFileService> tfs;
     _hNTracks    = tfs->make<TH1F>("hNTracks", "Number of tracks per event.",                               10,     0.,    10.  );
-    _hnDOF       = tfs->make<TH1F>("hnDOF",    "Number of degrees of freedom in fit.",                     100,     0.,   100.  );
+    _hnDOF       = tfs->make<TH1F>("hnDOF",    "Number of degrees of freedom in fit.",                     200,     0.,   200.  );
     _hHasCalo    = tfs->make<TH1F>("hHasCalo", "Number of calorimeter hits.",                                2,     0.,     2.  );
     _ht0         = tfs->make<TH1F>("ht0",      "Track time at mid-point of Tracker ;(ns)",                 100,     0.,  2000.  );
     _hp          = tfs->make<TH1F>("hp",       "Track momentum at mid-point of tracker;( MeV/c)",          100,    70.,   120.  );
     _hpErr       = tfs->make<TH1F>("hpErr",    "Error on track momentum at mid-point of tracker;( MeV/c)", 100,     0.,     2.  );
     _hnSkip      = tfs->make<TH1F>("hnSkip",   "Cut tree for skipped tracks;( MeV/c)",                       3,     0.,     3.  );
     _heOverP     = tfs->make<TH1F>("heOverP",  "E/p for tracks with a matched Calo Cluster",               150,     0.,     1.5 );
-    _hnCrvCC     = tfs->make<TH1F>("hnCrvCC",  "Number of CRV Coincidence clusters",                        10,     0.,    10.  );
+    _hnCrvCC     = tfs->make<TH1F>("hnCrvCC",  "Number of CRV Coincidence clusters",                        20,     0.,    20.  );
     _hdTCrv      = tfs->make<TH1F>("hdTnCrv",  "delta(T) track-CRV Coincidence cluster;(ns)",              200, -2000.,  2000.  );
 
     // Time, Momentum, Error on Momentum at Front, Mid and Back planes of the tracker
@@ -123,17 +123,24 @@ namespace mu2e {
         continue;
       }
 
-      // Only consider tracks that have all 3 sets of intersection information.
-      // The three locations are at the intersections of the trajectory with planes
-      // perpendicular to the z axis and at the front, middle and back of the tracker.
-      // Just because.  It's not a recommendation for analysis.
-      auto front = ks.intersections( SurfaceIdEnum::TT_Front ).front();
-      auto mid  = ks.intersections( SurfaceIdEnum::TT_Mid ).front();
-      auto back = ks.intersections( SurfaceIdEnum::TT_Back ).front();
-      if ( front == ks.intersections().end() || mid == ks.intersections().end() || back == ks.intersections().end() ){
+      // A hack to keep the example simple - this is NOT a recommendation for analysis.
+      //
+      // Only consider tracks that have exactly one intersection at each of the 3 reference surfaces
+      //    - the reference surfaces are planes perpendicular z axis at the front, middle and back of the tracker.
+      //    - the reported intersections are the intersection of the trajectory with each surface.
+      // Upstream going tracks that reflect in the magnetic mirror and pass through the tracker a second time,
+      // may have more than one intersection.
+      // It's also possible for a track to have zero intersections with some reference planes.
+      auto frontCol = ks.intersections( SurfaceIdEnum::TT_Front );
+      auto midCol   = ks.intersections( SurfaceIdEnum::TT_Mid   );
+      auto backCol  = ks.intersections( SurfaceIdEnum::TT_Back  );
+      if ( frontCol.size() !=1 || midCol.size() !=1 || backCol.size() != 1 ){
         _hnSkip->Fill(1.);
         continue;
       }
+      auto front = frontCol.at(0);
+      auto mid   = midCol.at(0);
+      auto back  = backCol.at(0);
 
       // Apply fiducial time cut;
       if ( mid->time() < _tmin ){
