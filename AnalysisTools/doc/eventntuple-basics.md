@@ -4,13 +4,17 @@
 
 Now that we have a list of EventNtuple files, let's take a look at one directly to understand the structure of the EventNtuple.
 
-[More basic introduction stuff to go here e.g. branches and leaves]
+The EventNtuple is a [ROOT TTree](https://root.cern.ch/doc/master/classTTree.html). You can think of it like a giant spreadsheet: each row is a Mu2e event and each leaf is a column.
+
+The actual structure is a bit more complicated. We collect leaves that have something in common into branches. For example, all leaves related to the reconstructed track are on a single branch. Also, each leaf might not be a single number like in a spreadsheet but a sequence of numbers (or even a sequence of sequence of numbers).
+
+In this tutorial, we will access the EventNtuple directly and learn how to find out more information about its branches and leaves. Note that in your real analysis, you are unlikely to access the EventNtuple directly but through utilities such as [RooUtil]() and [PyUtil](), which will be taught in the next tutorial.
 
 ## Accessing the EventNtuple
 
-The EventNtuple is a [ROOT TTree](https://root.cern.ch/doc/master/classTTree.html) and so can be accessed in either ROOT or python like any other TTree.
+Because the EventNtuple is a [ROOT TTree](https://root.cern.ch/doc/master/classTTree.html), it can be accessed in either ROOT or python like any other TTree.
 
-To print the details of the EventNtuple:
+To print the branches and leaves of the EventNtuple:
 
 * in ROOT:
 
@@ -53,7 +57,7 @@ As you can see, you get a brief description of the branch, as well as a descript
 
 (Note that you can also list all branches with ```ntuplehelper --list-all-branches``` or ```nthelper.list_all_branches()```. This complete list is also documented [here](https://github.com/Mu2e/EventNtuple/blob/main/doc/branches.md))
 
-## Understanding the structure of the EventNtuple
+## The Structure of the EventNtuple
 
 Each entry in the EventNtuple corresponds to a single Mu2e event.
 

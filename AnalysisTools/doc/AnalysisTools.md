@@ -15,7 +15,11 @@ By the end of these exercises, you will be able to:
 
 1. Logging into the Elastic Analysis Facility (EAF)
 2. Setting up the environment on the Elastic Analysis Facility
-3. [Taking a direct look at the EventNtuple](./eventntuple-basics.md)
-4. Looking at an interesting event with the Mu2e Event Display
+3. Getting a list of EventNtuple files
+4. [Taking a direct look at the EventNtuple](./eventntuple-basics.md)
 5. Analyzing the EventNtuple with [ROOT](./eventntuple-rooutil.md) or [Python](./eventntuple-pyutil.md)
-6. Performing the Refernce Analysis
+6. Looking at an interesting event with the Mu2e Event Display
+7. Performing the Reference Analysis
+
+## Optional Exercises
+1. Creating your own EventNtuple dataset
