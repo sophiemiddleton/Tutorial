@@ -8,17 +8,16 @@ The tutorial assumes you have completed
 Mu2e, like all experiments, has many data files to preserve, catalog, and access - "data handling" concerns the tools, procedures and policies involved.
 
 Some vocabulary
-* **data file** - a file, typically 1-5 GB in art, root or zipped formats
-* [dCache](https://mu2ewiki.fnal.gov/wiki/Dcache) a distributed disk system for data files
-** tape-backed dCache - files written here wil migrate on to and off tape as needed
-** persistent dCache - files written here stay until delete by the user
-** scratch dCache - files written here will be purged automatically within a few weeks
-* [Data handling tools](https://mu2ewiki.fnal.gov/wiki/Rucio)
-* **mdh** - a set of python scripts for Mu2e user convenience
-* **metacat** - a file catalog tool and database
-* **data_dispatcher** - a file processing control service
-* **Rucio** - a file locations catalog tool, database, and data movement service
-* dataset
+- **data file** - a file, typically 1-5 GB in art, root or zipped formats
+- [dCache](https://mu2ewiki.fnal.gov/wiki/Dcache) a distributed disk system for data files
+ - tape-backed dCache - files written here wil migrate on to and off tape as needed
+ - persistent dCache - files written here stay until delete by the user
+ - scratch dCache - files written here will be purged automatically within a few weeks
+- [Data handling tools](https://mu2ewiki.fnal.gov/wiki/Rucio)
+ - **mdh** - a set of python scripts for Mu2e user convenience
+ - **metacat** - a file catalog tool and database
+ - **data_dispatcher** - a file processing control service
+ - **Rucio** - a file locations catalog tool, database, and data movement service
 
 The tools that access databases may require authentication.  Generally, if you have a kerberos ticket you will be authenticated.
 
@@ -31,7 +30,7 @@ To get the tools in your path:
 
 Files can be "unregistered" or "registered".  Unregistered files are for local or temporary use and are not in the file catalog database and may be stored in various locations.  Registered files are cataloged and must be named by certain conventions, are located in special directories, and have other restrctions. This tutorial will only discuss registered files.
 
-Files are owned either by the collaboration or by a user.  The owner as a specifc string is either the word "mu2e" or a user's kerberos (logi) username.  Collaboration files include all raw data, and the output of reconstruction or simulation campaigns run from the mu2epro account.  User files are typically personal simulation samples, ntuples, or backup tarballs.
+Files are owned either by the collaboration or by a user.  The owner as a specifc string in file names and is either the word "mu2e" or a user's kerberos (login) username.  Collaboration files include all raw data, and the output of reconstruction or simulation campaigns run from the mu2epro account.  User files are typically personal simulation samples, ntuples, or backup tarballs.
 
 Files must be named by the [convention](https://mu2ewiki.fnal.gov/wiki/FileNames)
 
@@ -47,8 +46,8 @@ and all the files in the same dataset can be considered "more of the same" in so
 
 Every file and dataset is in a namespace which can be included by prepending the owner:
 
-   owner:tier.owner.description.config.sequencer.format
-   owner:tier.owner.description.config.format
+    owner:tier.owner.description.config.sequencer.format
+    owner:tier.owner.description.config.format
 
 Together this is called a "data identifier" or "did".
 
@@ -83,7 +82,7 @@ The three dCache types are nick-named "tape", "disk", and "scratch". A registere
 
     mdh print-url -s path -l tape $FILE1
 
-or most commands take files and datasets names from stdin:
+or most commands take files and datasets names from stdin if the command ends with dash:
 
     echo $FILE1 | mdh print-url -s path -l tape -    
 
@@ -93,7 +92,7 @@ To see if the file is on tape or disk or scratch, you can run a check on the dat
 
     mdh verify-dataset $DS1
 
-A common procedure is to make a list of files from a dataset.  We made a bare list of file names above, now lets make it more fancy.  Here we print the root urls for the files, which is useful as input to art jobs
+A common procedure is to make a list of files from a dataset.  We made a bare list of file names above, but the list can be put in amore useful format.  Here we print the root urls for the files, which is useful as input to art jobs.
 
     metacat query files from $DS1 | mdh print-url -l tape -s root -
 
@@ -104,19 +103,19 @@ The dCache area called "tape" is "tape-backed".  This means first we write the f
 
 mdh can make this request:
 
-    mdh prestage-dataset $DS1
+    mdh prestage-files $DS1
 
-This command works by issuing the requests, then checking back periodically to see if the files have been staged.  The command will block until the files are prestaged.  If the command gets interrupted, you can just restart it.  If the command exits quickly it means all the files are prestaged.  Try the command with `-v` to see periodic updates with the progress.
+This command works by issuing the requests, then checking back periodically to see if the files have been staged.  The command won't exit until the files are prestaged.  If the command gets interrupted, you can just restart it adding the `-m` switxh to skip the staging requests (since that was already done) and just monitor the fraction done.  If the command exits quickly it means all the files are prestaged.  Try the command with `-v` to see periodic updates with the progress.
 
-The time to presatge depends heavily on several factors.  If tape drives are available and the dataset is small, it can take a couple of minutes.  If the tape drives are busy, or the dataset is large, it can take a week.
+The time to prestage depends heavily on several factors.  If tape drives are available and the dataset is small, it can take a couple of minutes.  If the tape drives are busy, or the dataset is large, it can take a week.
 
 If you are not sure if you need to prestage a dataset, you can ask if it is staged.
 
     mdh query-dcache -o -v $DS1
 
-If the result if "NEARLINE" that means it is only on tape and not disk.  If it is"ONLINE" that means it is only on disk.  It can be both, "ONLINE_AND_NEARLINE".
+If the result is "NEARLINE" that means it is only on tape and not disk.  If it is"ONLINE" that means it is only on disk.  It can be both, "ONLINE_AND_NEARLINE".
 
-Or if some files are staged nd some are not, we can make root url's for the staged files:
+Or if some files are staged and some are not, we can make root url's for the staged files:
 
     mdh query-dcache -o -v $DS1 \
        | grep ONLINE | awk '{print $2}' \
@@ -176,7 +175,7 @@ and in metacat:
 
     metacat query files from $DS2
 
-For this tutorial we will stop the upload procedure here.  But if this is dataset which is for general use or will be read in grid jobs etc, then the final locations should be declared to Rucio.  We arn't doing it in this exercise because the Rucio records are permanent.
+For this tutorial we will stop the upload procedure here.  But if this is dataset which is for general use or will be read in grid jobs etc, then the final locations should be declared to Rucio.  We aren't doing it in this exercise because the Rucio records are permanent.
 
     # don't run!
     # mdh locate-dataset -l scratch $DS2
