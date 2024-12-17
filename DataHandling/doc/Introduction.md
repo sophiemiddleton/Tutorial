@@ -10,14 +10,14 @@ Mu2e, like all experiments, has many data files to preserve, catalog, and access
 Some vocabulary
 - **data file** - a file, typically 1-5 GB in art, root or zipped formats
 - [dCache](https://mu2ewiki.fnal.gov/wiki/Dcache) a distributed disk system for data files
- - tape-backed dCache - files written here wil migrate on to and off tape as needed
- - persistent dCache - files written here stay until delete by the user
- - scratch dCache - files written here will be purged automatically within a few weeks
+    - tape-backed dCache - files written here wil migrate on to and off tape as needed
+    - persistent dCache - files written here stay until delete by the user
+    - scratch dCache - files written here will be purged automatically within a few weeks
 - [Data handling tools](https://mu2ewiki.fnal.gov/wiki/Rucio)
- - **mdh** - a set of python scripts for Mu2e user convenience
- - **metacat** - a file catalog tool and database
- - **data_dispatcher** - a file processing control service
- - **Rucio** - a file locations catalog tool, database, and data movement service
+    - **mdh** - a set of python scripts for Mu2e user convenience
+    - **metacat** - a file catalog tool and database
+    - **data_dispatcher** - a file processing control service
+    - **Rucio** - a file locations catalog tool, database, and data movement service
 
 The tools that access databases may require authentication.  Generally, if you have a kerberos ticket you will be authenticated.
 
