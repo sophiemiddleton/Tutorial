@@ -10,6 +10,14 @@ The actual structure is a bit more complicated. We collect leaves that related t
 
 In this tutorial, we will access the EventNtuple directly and learn how to find out more information about its branches and leaves. Note that in your real analysis, you are unlikely to access the EventNtuple directly but through utilities such as [RooUtil]() and [PyUtil](), which will be taught in the next tutorial.
 
+## What is mock data?
+
+For this tutorial we will utilize "mock data." Details about our current mock data efforts can be found at: [Mock Data] (https://mu2ewiki.fnal.gov/wiki/Mock_Data_(MDS)).
+
+Mock data is simulated "data". It consists of reconstructed monte carlo with all backgrounds and signal samples combined and weighted to represent a given set of beam conditions (booster batch mode, livetime, signal rate etc.).
+
+Mock data is useful in helping us develop our analysis infrastructure and  therefore we base our tutorial around it.
+
 ## Accessing the EventNtuple
 
 Because the EventNtuple is a [ROOT TTree](https://root.cern.ch/doc/master/classTTree.html), it can be accessed in either ROOT or python like any other TTree.
