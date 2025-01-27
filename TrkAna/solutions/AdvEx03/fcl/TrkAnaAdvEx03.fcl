@@ -1,7 +1,0 @@
-#include "Offline/TrkDiag/fcl/TrkAnaReco.fcl"
-
-physics.producers.TrkQualNewDeM : @local::physics.producers.TrkQualDeM
-physics.producers.TrkQualNewDeM.TrkQualMVA.MVAWeights : "TrkQual/TrkQualWeights/TMVAClassification_MLP.weights.xml"
-
-physics.TrkAnaTrigPath : [ @sequence::physics.TrkAnaTrigPath, TrkQualNewDeM ]
-services.TFileService.fileName : "trkana-adv-ex03.root"
