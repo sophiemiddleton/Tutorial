@@ -19,7 +19,7 @@ By the end of these exercises, you will be able to:
 4. [Taking a direct look at the EventNtuple](./eventntuple-basics.md)
 5. Analyzing the EventNtuple with [ROOT](./eventntuple-rooutil.md) or [Python](./eventntuple-pyutil.md)
 6. Looking at an interesting event with the Mu2e Event Display
-7. Performing the Reference Analysis
+7. [Performing the Reference Analysis] (./referenceanalysis-basic.md)
 
 ## Optional Exercises
 1. Creating your own EventNtuple dataset
