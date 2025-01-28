@@ -10,6 +10,7 @@ In this exercise, we will use PyUtil to:
 
 Quick reference information about RooUtil is in the EventNtuple repository [here](https://www.github.com/Mu2e/EventNtuple/utils/pyutil/README.md)
 
+
 ## Simplest Example
 
 We will utilize the python utilities (py-utils) here. Begin a new notebook and import the relevant packages. Remember to ad the pyutils to your path first:
@@ -18,8 +19,8 @@ We will utilize the python utilities (py-utils) here. Begin a new notebook and i
 sys.path.append(<path to>/pyutils)
 
 ```
-TODO test the above on the EAF?
 
+then:
 
 ```
  import pyimport as evn
@@ -28,13 +29,43 @@ TODO test the above on the EAF?
  import awkward as ak
 ```
 
-No import your data set (assume one file here):
+Now import your data set (assume one file here):
 
 ```
-  mds = evn.Import("/exp/mu2e/data/users/sophie/ensembles/MDS1/MDS1av0.root", "EventNtuple", "ntuple") TODO-update path
+  mds = evn.Import("<dataset with full path>", "EventNtuple", "ntuple")
 ```
 
-Now extract the TrkSegs branch (TODO:ADD NOTES ON WHAT THE BRANCH MEANS):
+```
+<dataset with full path>`
+`` 
+
+should be the file you extracted in  the previous exercise, and should have a .root extension.
+
+## Printing
+
+To help with debugging a dataset you may want to print details of some of the events. This can be done using the pyprin class.
+
+Begin by importing the class:
+ 
+```
+import pyprint as prnt
+```
+
+Now look over the first 10 events:
+
+```
+  # print out the first 10 events:
+  myprnt = prnt.Print()
+  myprnt.PrintNEvents(branch,10)
+```
+
+Have a look at the structure of the event, what do you notice?
+
+## Extracting Track Momentum
+
+You can find a description of the branches for EventNtuple [here] (https://github.com/Mu2e/EventNtuple/blob/main/doc/branches.md). Let's start with a look at the TrkSeg branch. This branch contains information about track fit results at particular surface. We are interested in the fit at the tracker entrance in this exercise.
+
+First extract the TrkSegs branch: 
 
 ```
   treename = 'trksegs'
@@ -42,7 +73,7 @@ Now extract the TrkSegs branch (TODO:ADD NOTES ON WHAT THE BRANCH MEANS):
   branch = mds.ImportBranches(ntuple,[str(treename)])
 ```
 
-Now we want to plot the momentum fit at the tracker entrance (sid = 0):
+and select the track fit at the tracker entrance (sid = 0):
 
 ```
   surface_id = 0
@@ -50,19 +81,10 @@ Now we want to plot the momentum fit at the tracker entrance (sid = 0):
   trkent = mysel.SelectSurfaceID(branch, treename, surface_id)
 ```
 
-
+For more details on the surface ids and what they mean: [sid] (https://github.com/Mu2e/Offline/blob/main/MCDataProducts/inc/SurfaceStep.hh).
   
         
-## Printing
 
-Import the printing package:
- 
-```
-import pyprint as prnt
-```
-  # print out the first 10 events:
-  myprnt = prnt.Print()
-  myprnt.PrintNEvents(branch,10)
 ## Plotting
 
 Imprt the plotting package. This allows you to run custom functions for 1D, 2D hists and graph. The documentation for these functions can be found in .... . We also utilize a unique Mu2e style file.
