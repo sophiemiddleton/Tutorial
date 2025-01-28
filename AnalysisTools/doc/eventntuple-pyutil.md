@@ -85,28 +85,38 @@ For more details on the surface ids and what they mean: [sid] (https://github.co
   
         
 
-## Plotting
+## Plotting the momentum
 
-Imprt the plotting package. This allows you to run custom functions for 1D, 2D hists and graph. The documentation for these functions can be found in .... . We also utilize a unique Mu2e style file.
+Now you have an array of momenta. You may want to make a 1D histogram of these quantities.
+
+First, import the plotting package. This allows you to run custom functions for 1D, 2D hists and graph. The documentation for these functions can be found in [here](). We also utilize a unique Mu2e style file [here] ().
+
 ```
 import pyplot as plot
 ```
-  # make 1D plot
-  myhist = plot.Plot()
-  flatarraytime = ak.flatten(trkent[str(branchname)], axis=None)
-  myhist.Plot1D(flatarraytime, None, 100, 450, 1695, "Mu2e Example", "fit time at Trk Ent [ns]", "#events per bin", 'black', 'best', 'time.pdf', 300, True, False, False, False, True, True, True)
-  
+
+Now we need to find the magnitude of the momentum vector:
+
+```
   # access vectors
   myvect = vec.Vector()
-  vecbranchname = 'mom'
-  trkentall = mysel.SelectSurfaceID(branch, treename, surface_id)
-  vector_test = myvect.GetVectorXYZFromLeaf(trkentall, vecbranchname)
-  magnitude = myvect.Mag(vector_test)
+  vecmom = myvect.GetVectorXYZFromLeaf(trkent , 'mom')
+  magnitude = myvect.Mag(vecmom)
 
   # make 1D plot of magnitudes
   flatarraymom = ak.flatten(magnitude, axis=None)
-  
-  # 2D mom time plot
-  myhist.Plot2D( flatarraymom, flatarraytime, None, 100, 95, 115, 100, 450, 1650, "Mu2e Example", "fit mom at Trk Ent [MeV/c]", "fit
+```
+
+The latter command flattends the momentum, making it easier to pass to our 1D histogram.
+
+Now make the plot:
+
+```
+  # make 1D plot
+  myhist = plot.Plot()
+  myhist.Plot1D(flatarraytime, None, 100, 450, 1695, "Mu2e Example", "fit time at Trk Ent [ns]", "#events per bin", 'black', 'best', 'time.pdf', 300, True, False, False, False, True, True, True)
+```
+
+## A 2D Plot
 
 ## Cutting
