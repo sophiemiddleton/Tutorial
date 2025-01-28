@@ -36,8 +36,8 @@ Now import your data set (assume one file here):
 ```
 
 ```
-<dataset with full path>`
-`` 
+<dataset with full path>
+``` 
 
 should be the file you extracted in  the previous exercise, and should have a .root extension.
 
