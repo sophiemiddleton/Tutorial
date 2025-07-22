@@ -340,6 +340,7 @@ printer.print_n_events(data, n_events=10)
 
 <details>
 <summary>Hint</summary>
+
 ```
 from pyutils.pyselect import Select
 selector = Select()
@@ -362,22 +363,12 @@ plotter.plot_1D(
 ```
 </details>
 
-9) Plot the number of hits in track fits that are both travelling downstream and used the e-minus particle hypothesis
-
-<details>
-<summary>Hint</summary>
-TODO
-</details>
-
 # Track Fit Selections
 
 Now we will look at our the vector-of-vector branches: trksegs and the trksegsmc. These contain information about track segments.
 
 In pyutils the best way to deal with multiple branches is to create something like this:
 
-```
-
-```
 ## Challenges
 
 10) Plot the reconstructed momentum of tracks at the middle of the tracker
