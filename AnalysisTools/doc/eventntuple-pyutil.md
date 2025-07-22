@@ -207,11 +207,11 @@ Now lets use this to make some interesting plots:
 
 <details>
 <summary>Hint</summary>
+
 ```
 from pyutils.pyplot import Plot 
 plotter = Plot()
 nactive = ak.flatten(data["trk.nactive"], axis=None)
-# Create a 1D histogram of track times
 plotter.plot_1D(
     nactive,               # Data to plot
     nbins=100,               # Number of bins
@@ -247,9 +247,10 @@ These will be easy to plot in a 1D histogram.
 
 
 
-5) Plot the number of hits on the MC-truth track in a histogram.
+5) Plot the number of hits on the MC-truth track in a histogram
 
-First let's add the mc branch to our list of branches:
+<details>
+<summary>Hint</summary>
 
 ```
 mc_branches = ["trkmc.nactive"]
@@ -257,11 +258,6 @@ mc = processor.process_data(
     file_name=file_name,
     branches=mc_branches
 )
-```
-
-<details>
-<summary>Hint</summary>
-```
 mc_nactive = ak.flatten(mc["trkmc.nactive"], axis=None)
 plotter.plot_1D(
     mc_nactive,               # Data to plot
@@ -281,6 +277,7 @@ plotter.plot_1D(
 
 <details>
 <summary>Hint</summary>
+
 ```
 plotter.plot_2D(
     x=mc_nactive,           # x-axis data
@@ -302,6 +299,7 @@ plotter.plot_2D(
 
 <details>
 <summary>Hint</summary>
+
 ```
 electron_mask = (data["trk.pdg"] == 11)
 electron_trks = data["trk.nactive"].mask[electron_mask]
