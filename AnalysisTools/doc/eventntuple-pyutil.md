@@ -1,122 +1,221 @@
-# Analyzing the EventNtuple with PyUtil (Draft)
+# Analyzing the EventNtuple with PyUtil
 
 ## Introduction
+
+# Analyzing the EventNtuple with PyUtil
+
+# Introduction
+
 In the [previous exercise](eventntuple-basics.md), we learned how to access the EventNtuple directly and get information about the branches and leaves contained in it. As mentioned, this has limited use for a real analysis.
 
-In this exercise, we will use PyUtil to:
+PyUtil offers an analyzer-friendly interface to EventNtuple for python-based analyses. PyUtil handles importing EventNtuple files into python and allows simple application of cuts, creation of histograms and most usual analysis activities. PyUtils is scalable for multi-threading.
 
-* plot information from the ntuple,
-* make cuts on the ntuple,
+# Learning Objectives
 
-Quick reference information about RooUtil is in the EventNtuple repository [here](https://www.github.com/Mu2e/EventNtuple/utils/pyutil/README.md)
+By the end of this tutorial, you will be able to:
+
+* analyze EventNtuple datasets,
+* select subsets of the data, and
+* create histograms of selected data.
+
+Each section in this tutorial gives you a small skeleton macro and then a few challenges that you should use to fill out the skeleton. Most challenges also provide a hints that you can show by clicking the arrow:
+
+<details>
+<summary>Hint</summary>
+
+there are a few places to get additional help as you work through these challenges:
+* the [quick reference README](https://github.com/Mu2e/pyutils/blob/main/README.md)
+* the [examples](https://github.com/Mu2e/pyutils/tree/main/examples) can be used as a reference
+* the #analysis-tools Slack channel
+
+</details>
 
 
-## Simplest Example
+# Setting Up
 
-We will utilize the python utilities (py-utils) here. Begin a new notebook and import the relevant packages. Remember to ad the pyutils to your path first:
-
-```
-sys.path.append(<path to>/pyutils)
-
-```
-
-then:
-
-```
- import pyimport as evn
- import pyplot as plot
- import pyselect as slct
- import awkward as ak
-```
-
-Now import your data set (assume one file here):
-
-```
-  mds = evn.Import("<dataset with full path>", "EventNtuple", "ntuple")
-```
+Before we begin we need to setup the standard Mu2e python environment, this can be done on the gpvm machines as follows:
 
 ```
-<dataset with full path>
-``` 
-
-should be the file you extracted in  the previous exercise, and should have a .root extension.
-
-## Printing
-
-To help with debugging a dataset you may want to print details of some of the events. This can be done using the pyprin class.
-
-Begin by importing the class:
- 
-```
-import pyprint as prnt
+mu2einit
+pyenv ana
 ```
 
-Now look over the first 10 events:
+## Loading an EventNtuple Dataset
+
+Open up a text editor, or launch a jupyter-notebook (OPTIONAL)
 
 ```
-  # print out the first 10 events:
-  myprnt = prnt.Print()
-  myprnt.PrintNEvents(branch,10)
+jupyter-lab --no-browser
 ```
-
-Have a look at the structure of the event, what do you notice?
-
-## Extracting Track Momentum
-
-You can find a description of the branches for EventNtuple [here] (https://github.com/Mu2e/EventNtuple/blob/main/doc/branches.md). Let's start with a look at the TrkSeg branch. This branch contains information about track fit results at particular surface. We are interested in the fit at the tracker entrance in this exercise.
-
-First extract the TrkSegs branch: 
+Then create an ssh-tunnel:
 
 ```
-  treename = 'trksegs'
-  ntuple = mds.ImportTree()
-  branch = mds.ImportBranches(ntuple,[str(treename)])
+ ssh -f -KXY -N -L 8888:localhost:8888 user@mu2egpvm01.fnal.gov
 ```
 
-and select the track fit at the tracker entrance (sid = 0):
+replace the port and username/machine-name as appropriate.
+
+Now we are ready to import a file:
 
 ```
-  surface_id = 0
-  mysel = slct.Select()
-  trkent = mysel.SelectSurfaceID(branch, treename, surface_id)
+import awkward as ak
+from pyutils.pyprocess import Processor 
+processor = Processor(verbosity=2)
+
+
+file_name = "/pnfs/mu2e/tape/phy-nts/nts/mu2e/MDS2ac-OnSpillTriggered/MDC2020aw_perfect_v1_3/root/8c/0b/nts.mu2e.MDS2ac-OnSpillTriggered.MDC2020aw_perfect_v1_3.0.root"
+
+branches = ["trksegs"]
+
+data = processor.process_data(
+    file_name=file_name,
+    branches=branches
+)
 ```
 
-For more details on the surface ids and what they mean: [sid] (https://github.com/Mu2e/Offline/blob/main/MCDataProducts/inc/SurfaceStep.hh).
-  
-        
-
-## Plotting the momentum
-
-Now you have an array of momenta. You may want to make a 1D histogram of these quantities.
-
-First, import the plotting package. This allows you to run custom functions for 1D, 2D hists and graph. The documentation for these functions can be found in [here](). We also utilize a unique Mu2e style file [here] ().
+Now print some of the data using the pyprint class:
 
 ```
-import pyplot as plot
+from pyutils.pyprint import Print
 ```
 
-Now we need to find the magnitude of the momentum vector:
+
+Initialise the printer, verbose=False is default and prevents overwhelming output with large arrays
 
 ```
-  # access vectors
-  myvect = vec.Vector()
-  vecmom = myvect.GetVectorXYZFromLeaf(trkent , 'mom')
-  magnitude = myvect.Mag(vecmom)
-
-  # make 1D plot of magnitudes
-  flatarraymom = ak.flatten(magnitude, axis=None)
+printer = Print(verbose=False)
 ```
 
-The latter command flattends the momentum, making it easier to pass to our 1D histogram.
-
-Now make the plot:
+Print the first 10 events:
 
 ```
-  # make 1D plot
-  myhist = plot.Plot()
-  myhist.Plot1D(flatarraytime, None, 100, 450, 1695, "Mu2e Example", "fit time at Trk Ent [ns]", "#events per bin", 'black', 'best', 'time.pdf', 300, True, False, False, False, True, True, True)
+print("Before selection cuts:")
+printer.print_n_events(data, n_events=1)
 ```
 
-## A 2D Plot
+## Challenges
 
-## Cutting
+1) Print the event numbers to terminal:
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+2) Plot the event numbers in a histogram:
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+3) Plot only on the odd-numbered event IDs into a histogram and raw it on the same set of axes as the histogram in Challenge (2):
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+# Track selction cuts
+
+Now we have learned the basics, let's apply that to something that might be used in a real analysis.
+
+First lets select the branches associated with our `trk` branch:
+
+```
+import awkward as ak
+from pyutils.pyprocess import Processor 
+processor = Processor(verbosity=2)
+
+
+file_name = "/pnfs/mu2e/tape/phy-nts/nts/mu2e/MDS2ac-OnSpillTriggered/MDC2020aw_perfect_v1_3/root/8c/0b/nts.mu2e.MDS2ac-OnSpillTriggered.MDC2020aw_perfect_v1_3.0.root"
+
+branches = ["trk"]
+
+data = processor.process_data(
+    file_name=file_name,
+    branches=branches
+)
+
+```
+
+Now lets use this to make some interesting plots:
+
+### Challenges
+
+4) Plot the number of hits on the reconstructed track in a histogram
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+5) Plot the number of hits on the MC-truth track in a histogram
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+6) Plot the number of hits on the MC-truth track against the number of hits on the reconstructed track in a 2D histogram
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+7) Plot the number of hits in track fits that used the e-minus particle hypothesis
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+8) Plot the number of hits in track fits that are travelling downstream
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+9) Plot the number of hits in track fits that are both travelling downstream and used the e-minus particle hypothesis
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+# Track Fit Selections
+
+Now we will look at our the vector-of-vector branches: trksegs and the trksegsmc. These contain information about track segments.
+
+In pyutils the best way to deal with multiple branches is to create something like this:
+
+```
+
+```
+## Challenges
+
+10) Plot the reconstructed momentum of tracks at the middle of the tracker
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+11) Plot the momentum resolution of tracks (i.e. the difference between the reconstructed momentum and MC-truth momentumum)
+
+<details>
+<summary>Hint</summary>
+TODO
+</details>
+
+# Conclusions
+
+This tutorial hasn't covered every single class in RooUtil but hopefully it has shown you how to:
+
+* analyze EventNtuple datasets,
+* select subsets of the data, and
+* create histograms of selected data.
+
+
