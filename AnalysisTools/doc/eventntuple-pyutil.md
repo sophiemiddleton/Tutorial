@@ -65,7 +65,7 @@ processor = Processor(verbosity=2)
 
 file_name = "/pnfs/mu2e/tape/phy-nts/nts/mu2e/MDS2ac-OnSpillTriggered/MDC2020aw_perfect_v1_3/root/8c/0b/nts.mu2e.MDS2ac-OnSpillTriggered.MDC2020aw_perfect_v1_3.0.root"
 
-branches = ["trksegs"]
+branches = ["event"]
 
 data = processor.process_data(
     file_name=file_name,
@@ -89,8 +89,7 @@ printer = Print(verbose=False)
 Print the first 10 events:
 
 ```
-print("Before selection cuts:")
-printer.print_n_events(data, n_events=1)
+printer.print_n_events(data, n_events=10)
 ```
 
 ## Challenges
@@ -99,14 +98,39 @@ printer.print_n_events(data, n_events=1)
 
 <details>
 <summary>Hint</summary>
-TODO
+
+```
+from pyutils.pyprint import Print
+
+printer = Print(verbose=False)
+
+printer.print_n_events(data, n_events=10)
+```
 </details>
 
 2) Plot the event numbers in a histogram:
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+from pyutils.pyplot import Plot 
+
+plotter = Plot()
+
+# Create a 1D histogram of track times
+plotter.plot_1D(
+    data["event"],               # Data to plot
+    nbins=100,               # Number of bins
+    xmin=0,                # Minimum x-axis value
+    xmax=1000,               # Maximum x-axis value
+    # title="Time at Tracker Entrance",
+    xlabel="Event Number",
+    ylabel="# occurances",
+    out_path='event.png',  # Output file path
+    stat_box=True,           # Show statistics box
+    error_bars=True          # Show error bars
+)
+```
 </details>
 
 3) Plot only on the odd-numbered event IDs into a histogram and raw it on the same set of axes as the histogram in Challenge (2):
