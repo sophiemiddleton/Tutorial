@@ -112,12 +112,10 @@ printer.print_n_events(data, n_events=10)
 
 <details>
 <summary>Hint</summary>
+
 ```
 from pyutils.pyplot import Plot 
-
 plotter = Plot()
-
-# Create a 1D histogram of track times
 plotter.plot_1D(
     data["event"],               # Data to plot
     nbins=100,               # Number of bins
