@@ -131,11 +131,28 @@ plotter.plot_1D(
 ```
 </details>
 
-3) Plot only on the odd-numbered event IDs into a histogram and raw it on the same set of axes as the histogram in Challenge (2):
+3) Plot only on the odd-numbered event IDs into a histogram and raw it on the same set of axes as the histogram in Challenge (2). Make sure the two histograms have distinct styles:
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+odd_mask = (data["event"] % 2 != 0)
+odd_events = data["event"].mask[odd_mask]
+
+plotter.plot_1D_overlay(
+    {
+        "All" : data["event"], # First histogram
+        "Odd" : odd_events,
+    },
+    nbins=100,
+    xmin=0,
+    xmax=100,
+    xlabel="Event Number",
+    ylabel="# occurances",
+    out_path="events_odd.png",
+    norm_by_area=True # Optionally normalise the histograms by area
+)
+```
 </details>
 
 # Track selction cuts
@@ -152,7 +169,9 @@ processor = Processor(verbosity=2)
 
 file_name = "/pnfs/mu2e/tape/phy-nts/nts/mu2e/MDS2ac-OnSpillTriggered/MDC2020aw_perfect_v1_3/root/8c/0b/nts.mu2e.MDS2ac-OnSpillTriggered.MDC2020aw_perfect_v1_3.0.root"
 
-branches = ["trk"]
+branches = ["trk.nactive", 
+            "trk.pdg", 
+            "trk.status"]
 
 data = processor.process_data(
     file_name=file_name,
@@ -160,6 +179,27 @@ data = processor.process_data(
 )
 
 ```
+
+You can read more about what these represent in the EventNTuple README.md. Let's print a few events:
+
+```
+from pyutils.pyprint import Print
+printer = Print(verbose=False)
+printer.print_n_events(data, n_events=10)
+```
+
+You should see something like this:
+
+```
+-------------------------------------------------------------------------------------
+trk.status: [1, 1, 1, 1]
+trk.pdg: [11, -11, 13, -13]
+trk.nactive: [33, 23, 33, 26]
+-------------------------------------------------------------------------------------
+```
+
+This tells us that our `trk` branch contains a vector with 4 elements. Each of these tracks has an associated pdg id (11=electron, -11=positron, 13=muon, -13=anti-muon). The 4 tracks are track hypothesis fits with these particles being assumed in the fit. The first array tells us whether the track fit converged, these all did. The last array tells us how many active hits are in the fit, for reference, signal selection requires nactive > 20 for a "good fit."
+
 
 Now lets use this to make some interesting plots:
 
@@ -169,7 +209,45 @@ Now lets use this to make some interesting plots:
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+from pyutils.pyplot import Plot 
+
+plotter = Plot()
+nactive = ak.flatten(data["trk.nactive"], axis=None)
+# Create a 1D histogram of track times
+plotter.plot_1D(
+    nactive,               # Data to plot
+    nbins=100,               # Number of bins
+    xmin=0,                # Minimum x-axis value
+    xmax=100,               # Maximum x-axis value
+    # title="Time at Tracker Entrance",
+    xlabel="trk.nactive",
+    ylabel="# occurances per bin",
+    out_path='event.png',  # Output file path
+    stat_box=True,           # Show statistics box
+    error_bars=True          # Show error bars
+)
+```
+
+Note that becase the branch is a vector we need to flatten it before plotting:
+
+```
+nactive = ak.flatten(data["trk.nactive"], axis=None)
+```
+
+So for example, if the first three events are:
+
+```
+[33, 27, 33, 23] [50, 42, 49, 37] [46, 35, 46, 33]
+```
+
+when flattened this becomes:
+```
+[33, 27, 33, 23, 50, 42, 49, 37, 46, 35, 46, 33]
+```
+
+These will be easy to plot in a 1D histogram.
+
 </details>
 
 5) Plot the number of hits on the MC-truth track in a histogram
