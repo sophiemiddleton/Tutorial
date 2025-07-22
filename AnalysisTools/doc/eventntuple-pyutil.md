@@ -247,16 +247,21 @@ These will be easy to plot in a 1D histogram.
 
 
 
-5) Plot the number of hits on the MC-truth track in a histogram
+5) Plot the number of hits on the MC-truth track in a histogram.
 
-<details>
-<summary>Hint</summary>
+First let's add the mc branch to our list of branches:
+
 ```
 mc_branches = ["trkmc.nactive"]
 mc = processor.process_data(
     file_name=file_name,
     branches=mc_branches
 )
+```
+
+<details>
+<summary>Hint</summary>
+```
 mc_nactive = ak.flatten(mc["trkmc.nactive"], axis=None)
 plotter.plot_1D(
     mc_nactive,               # Data to plot
