@@ -263,7 +263,6 @@ plotter.plot_1D(
     nbins=100,               # Number of bins
     xmin=0,                # Minimum x-axis value
     xmax=100,               # Maximum x-axis value
-    # title="Time at Tracker Entrance",
     xlabel="trkmc.nactive",
     ylabel="# occurances per bin",
     out_path='trkmc_nactive.png',  # Output file path
