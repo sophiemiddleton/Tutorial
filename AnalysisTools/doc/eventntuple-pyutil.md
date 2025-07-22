@@ -135,10 +135,10 @@ plotter.plot_1D(
 
 <details>
 <summary>Hint</summary>
+
 ```
 odd_mask = (data["event"] % 2 != 0)
 odd_events = data["event"].mask[odd_mask]
-
 plotter.plot_1D_overlay(
     {
         "All" : data["event"], # First histogram
@@ -165,7 +165,6 @@ First lets select the branches associated with our `trk` branch:
 import awkward as ak
 from pyutils.pyprocess import Processor 
 processor = Processor(verbosity=2)
-
 
 file_name = "/pnfs/mu2e/tape/phy-nts/nts/mu2e/MDS2ac-OnSpillTriggered/MDC2020aw_perfect_v1_3/root/8c/0b/nts.mu2e.MDS2ac-OnSpillTriggered.MDC2020aw_perfect_v1_3.0.root"
 
@@ -211,7 +210,6 @@ Now lets use this to make some interesting plots:
 <summary>Hint</summary>
 ```
 from pyutils.pyplot import Plot 
-
 plotter = Plot()
 nactive = ak.flatten(data["trk.nactive"], axis=None)
 # Create a 1D histogram of track times
