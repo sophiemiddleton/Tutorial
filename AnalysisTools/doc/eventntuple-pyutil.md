@@ -121,7 +121,6 @@ plotter.plot_1D(
     nbins=100,               # Number of bins
     xmin=0,                # Minimum x-axis value
     xmax=1000,               # Maximum x-axis value
-    # title="Time at Tracker Entrance",
     xlabel="Event Number",
     ylabel="# occurances",
     out_path='event.png',  # Output file path
@@ -218,14 +217,14 @@ plotter.plot_1D(
     nbins=100,               # Number of bins
     xmin=0,                # Minimum x-axis value
     xmax=100,               # Maximum x-axis value
-    # title="Time at Tracker Entrance",
     xlabel="trk.nactive",
     ylabel="# occurances per bin",
-    out_path='event.png',  # Output file path
+    out_path='trk_nactive.png',  # Output file path
     stat_box=True,           # Show statistics box
     error_bars=True          # Show error bars
 )
 ```
+</details>
 
 Note that becase the branch is a vector we need to flatten it before plotting:
 
@@ -246,34 +245,119 @@ when flattened this becomes:
 
 These will be easy to plot in a 1D histogram.
 
-</details>
+
 
 5) Plot the number of hits on the MC-truth track in a histogram
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+mc_branches = ["trkmc.nactive"]
+mc = processor.process_data(
+    file_name=file_name,
+    branches=mc_branches
+)
+mc_nactive = ak.flatten(mc["trkmc.nactive"], axis=None)
+plotter.plot_1D(
+    mc_nactive,               # Data to plot
+    nbins=100,               # Number of bins
+    xmin=0,                # Minimum x-axis value
+    xmax=100,               # Maximum x-axis value
+    # title="Time at Tracker Entrance",
+    xlabel="trkmc.nactive",
+    ylabel="# occurances per bin",
+    out_path='trkmc_nactive.png',  # Output file path
+    stat_box=True,           # Show statistics box
+    error_bars=True          # Show error bars
+)
+```
 </details>
 
 6) Plot the number of hits on the MC-truth track against the number of hits on the reconstructed track in a 2D histogram
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+plotter.plot_2D(
+    x=mc_nactive,           # x-axis data
+    y=nactive,              # y-axis data
+    nbins_x=100,              # Number of x bins
+    xmin=0,                  # Minimum x value
+    xmax=100,                 # Maximum x value
+    nbins_y=100,              # Number of y bins
+    ymin=0,                 # Minimum y value
+    ymax=100,                # Maximum y value
+    xlabel="trkmc.nactive",
+    ylabel="trk.nactive",
+    out_path='2D_mc_rec_nactive.png'
+)
+```
 </details>
 
 7) Plot the number of hits in track fits that used the e-minus particle hypothesis
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+electron_mask = (data["trk.pdg"] == 11)
+electron_trks = data["trk.nactive"].mask[electron_mask]
+electron_nactive = ak.flatten(electron_trks, axis=None)
+
+plotter.plot_1D(
+    electron_nactive,               # Data to plot
+    nbins=100,               # Number of bins
+    xmin=0,                # Minimum x-axis value
+    xmax=100,               # Maximum x-axis value
+    # title="Time at Tracker Entrance",
+    xlabel="electron trk.nactive",
+    ylabel="# occurances per bin",
+    out_path='trk_nactive_elec.png',  # Output file path
+    stat_box=True,           # Show statistics box
+    error_bars=True          # Show error bars
+)
+```
 </details>
 
-8) Plot the number of hits in track fits that are travelling downstream
+8) Plot the number of hits in track fits that are travelling downstream.
+
+Before completing this let's add `trksegs` to our list of branches:
+
+```
+branches = ["trk.nactive", "trk.pdg", "trk.status", "trksegs"]
+
+data = processor.process_data(
+    file_name=file_name,
+    branches=branches
+)
+from pyutils.pyprint import Print
+printer = Print(verbose=False)
+printer.print_n_events(data, n_events=10)
+```
+
+`trksegs` is a vector-of-vector branch. You can see from the print out it is more complicated and nested than the branches we looked at previously.
 
 <details>
 <summary>Hint</summary>
-TODO
+```
+from pyutils.pyselect import Select
+selector = Select()
+down_mask = selector.is_downstream(data, "trksegs")
+down_trks = data["trk.nactive"].mask[down_mask]
+down_nactive = ak.flatten(down_trks, axis=None)
+
+plotter.plot_1D(
+    electron_nactive,               # Data to plot
+    nbins=100,               # Number of bins
+    xmin=0,                # Minimum x-axis value
+    xmax=100,               # Maximum x-axis value
+    # title="Time at Tracker Entrance",
+    xlabel="electron trk.nactive",
+    ylabel="# occurances per bin",
+    out_path='trk_nactive_elec.png',  # Output file path
+    stat_box=True,           # Show statistics box
+    error_bars=True          # Show error bars
+)
+```
 </details>
 
 9) Plot the number of hits in track fits that are both travelling downstream and used the e-minus particle hypothesis
